@@ -1,0 +1,128 @@
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #fafafa;
+    color: #212529;
+}
+
+.font-serif {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+}
+
+.hero-section {
+    background-color: #0b0c10;
+    color: white;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.btn-order {
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 700;
+    border-radius: 30px;
+    padding: 12px 35px;
+    text-decoration: none;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.btn-order:hover {
+    background-color: #ff4a5a;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 74, 90, 0.4);
+}
+
+.promo-blue-card {
+    background: linear-gradient(135deg, #1e56a0 0%, #113f7a 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 35px;
+    text-align: center;
+}
+
+.best-seller-section {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 40px 30px;
+    border: 1px solid #eceff1;
+}
+
+.sidebar-menu-list .list-group-item {
+    background: transparent;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid #f5f5f5;
+    padding: 14px 15px;
+    color: #495057;
+    transition: all 0.2s ease;
+}
+
+.sidebar-menu-list .list-group-item:hover {
+    background-color: #fff6f6;
+    color: #ff4a5a;
+    padding-left: 22px;
+}
+
+/* Thẻ Món Ăn (Food Card) */
+.food-card {
+    background-color: #e3fafc !important; 
+    border-radius: 24px;
+    border: none !important;
+    overflow: visible; 
+    text-align: center;
+    transition: all 0.3s ease;
+    margin-top: 40px; 
+}
+
+.food-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+}
+
+.food-card img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-top: -65px; 
+    border: 5px solid #ffffff;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+}
+
+.add-btn {
+    background-color: #ff4a5a;
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.add-btn:hover {
+    background-color: #e03131;
+    transform: scale(1.15);
+}
+
+.hover-white:hover {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 10px;
+}

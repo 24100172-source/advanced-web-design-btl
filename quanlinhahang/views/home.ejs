@@ -1,0 +1,120 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<main class="container my-4">
+  
+  <section class="hero-section row g-0 mb-5 shadow-sm">
+    <div class="col-md-6 p-5 d-flex flex-column justify-content-center">
+      <h6 class="text-warning text-uppercase mb-2 tracking-wider">Nhà Hàng Grill House</h6>
+      <h1 class="fw-black display-4 mb-3 text-white lh-sm">COMBO<br>THỊT NƯỚNG<br>& LẨU</h1>
+      <p class="small text-secondary mb-4">Thưởng thức hương vị Hàn Quốc đích thực với Combo Thịt Nướng và Lẩu đặc biệt độc quyền tại nhà hàng chúng tôi.</p>
+      <div>
+        <a href="/dat-ban" class="btn-order">Đặt bàn ngay</a>
+      </div>
+      <div class="mt-5 pt-4 border-top border-secondary row text-secondary small">
+        <div class="col-6"><i class="bi bi-telephone"></i> +84 988 655 622</div>
+        <div class="col-6 text-end"><i class="bi bi-envelope"></i> contact@grillhouse.vn</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="row g-2 p-3 h-100">
+        <div class="col-6"><img src="/images/hero-1.jpg" class="img-fluid rounded-3 w-100 h-100 object-fit-cover" alt="food"></div>
+        <div class="col-6"><img src="/images/hero-2.jpg" class="img-fluid rounded-3 w-100 h-100 object-fit-cover" alt="food"></div>
+        <div class="col-6"><img src="/images/hero-3.jpg" class="img-fluid rounded-3 w-100 h-100 object-fit-cover" alt="food"></div>
+        <div class="col-6"><img src="/images/hero-4.jpg" class="img-fluid rounded-3 w-100 h-100 object-fit-cover" alt="food"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="row g-4 mb-5">
+    <div class="col-md-6">
+      <div class="promo-blue-card h-100 d-flex flex-column justify-content-between shadow-sm">
+        <h4 class="text-warning fw-bold tracking-wide">ƯU ĐÃI ĐẶC BIỆT<br>THỊT NƯỚNG NGON</h4>
+        <div class="my-4">
+          <span class="text-uppercase small text-white-50 d-block">Giảm giá lên đến</span>
+          <h1 class="display-3 fw-bold my-1 text-white">500.000đ</h1>
+          <span class="small bg-white bg-opacity-20 px-3 py-1 rounded-pill">Cho hóa đơn từ 1.590.000đ</span>
+        </div>
+        <div class="row g-2">
+          <div class="col-6 bg-white bg-opacity-10 p-2 rounded">
+            <small class="d-block text-white-50">GIẢM GIÁ</small><strong>50.000đ</strong> <span class="small d-block text-white-50">HĐ từ 490k</span>
+          </div>
+          <div class="col-6 bg-white bg-opacity-10 p-2 rounded">
+            <small class="d-block text-white-50">GIẢM GIÁ</small><strong>100.000đ</strong> <span class="small d-block text-white-50">HĐ từ 690k</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 d-flex flex-column justify-content-between gap-3">
+      <div class="row g-3">
+        <div class="col-6">
+          <img src="/images/promo-menu.jpg" class="img-fluid rounded-3 shadow-sm w-100 h-100 object-fit-cover" alt="Menu">
+        </div>
+        <div class="col-6 bg-white border rounded-3 p-3 text-center d-flex flex-column justify-content-center shadow-sm">
+          <small class="text-danger fw-bold text-uppercase">Thịt Nướng Đỉnh Cao</small>
+          <h5 class="fw-bold my-2 text-dark">GIẢM 2% KHI ĐẶT BÀN ONLINE</h5>
+          <img src="/images/dish-small.jpg" class="img-fluid mx-auto mt-2" style="max-height: 80px;" alt="dish">
+        </div>
+      </div>
+      <div class="w-100">
+        <img src="/images/banner-grill.jpg" class="img-fluid rounded-3 shadow-sm w-100 object-fit-cover" style="max-height: 155px;" alt="Grill Graphic">
+      </div>
+    </div>
+  </section>
+
+  <section class="best-seller-section rounded-4 shadow-sm mb-5">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold text-dark font-serif fs-1">✨ Best Seller ✨</h2>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-3 bg-white p-3 rounded-3 shadow-sm mb-4 mb-md-0" style="max-height: 520px; overflow-y: auto;">
+        <div class="bg-warning text-white p-2 text-center rounded-2 mb-3 fw-bold text-uppercase small tracking-wide">Danh Mục Menu</div>
+        <div class="list-group sidebar-menu-list custom-scrollbar">
+          <% if(categories && categories.length > 0) { %>
+            <% categories.forEach((category, index) => { %>
+              <a href="/danh-muc/<%= category.slug %>" class="list-group-item list-group-item-action <%= index === 0 ? 'text-danger fw-bold' : '' %>">
+                <%= category.name %>
+              </a>
+            <% }) %>
+          <% } else { %>
+            <p class="small text-muted p-2 text-center">Không tìm thấy danh mục.</p>
+          <% } %>
+        </div>
+      </div>
+      
+      <div class="col-md-9 row row-cols-1 row-cols-md-3 g-4 pt-4">
+        <% if(bestSellers && bestSellers.length > 0) { %>
+          <% bestSellers.forEach(product => { %>
+            <div class="col">
+              <div class="card food-card p-3 h-100 d-flex flex-column justify-content-between align-items-center">
+                
+                <img src="/<%= product.image_url %>" alt="<%= product.name %>" onerror="this.src='/images/default-food.jpg'">
+                
+                <div class="card-body p-0 mt-3 text-center">
+                  <h6 class="card-title fw-bold text-dark text-truncate px-2" style="max-width: 200px;"><%= product.name %></h6>
+                </div>
+                
+                <div class="w-100 d-flex justify-content-between align-items-center mt-3 px-3">
+                  <span class="fw-bold text-dark fs-5">
+                    <%= product.price.toLocaleString('vi-VN') %>đ
+                  </span>
+                  <button class="add-btn" title="Thêm vào giỏ hàng"><i class="bi bi-plus-lg"></i></button>
+                </div>
+                
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="col-12 text-center py-5">
+            <p class="text-muted fs-5">Chưa có món ăn nổi bật được thiết lập!</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<%- include('partials/footer') %>
