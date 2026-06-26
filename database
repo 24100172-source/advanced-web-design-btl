@@ -1,0 +1,183 @@
+drop database newsdb;
+create database newsdb;
+use newsdb;
+
+-- Bảng Danh mục món ăn (Sidebar Menu)
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    slug VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- Bảng Chi tiết món ăn (Products)
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT,
+    name VARCHAR(150) NOT NULL,
+    price INT NOT NULL, 
+    image_url VARCHAR(255) DEFAULT NULL,
+    is_bestseller TINYINT DEFAULT 0,
+    status TINYINT DEFAULT 1,        
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- Bảng Đặt bàn (Bookings)
+CREATE TABLE bookings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(100) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    email VARCHAR(100) DEFAULT NULL,
+    booking_date DATE NOT NULL,
+    booking_time TIME NOT NULL,
+    guests_count INT NOT NULL DEFAULT 1,
+    status ENUM('pending', 'confirmed', 'cancelled') DEFAULT 'pending',
+    note TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+INSERT INTO categories (id, name, slug) VALUES 
+(1, 'CHEF\'S RECOMMENDATION', 'chefs-recommendation'),
+(2, 'KABUBI SERIES', 'kabubi-series'),
+(3, 'SALAD & KHAI VỊ', 'salad-khai-vi'),
+(4, 'THỊT BÒ NƯỚNG HÀN', 'thit-bo-nuong-han'),
+(5, 'THỊT HEO NƯỚNG HÀN', 'thit-heo-nuong-han'),
+(6, 'HẢI SẢN NƯỚNG', 'hai-san-nuong'),
+(7, 'MÓN TRUYỀN THỐNG HÀN QUỐC', 'mon-truyen-thong-han-quoc'),
+(8, 'CƠM/MỲ/MIẾN HÀN QUỐC', 'com-my-mien-han-quoc'),
+(9, 'CANH HẦM HÀN QUỐC', 'canh-ham-han-quoc'),
+(10, 'LẨU HÀN QUỐC', 'lau-han-quoc'),
+(11, 'MÓN ĂN KÈM (PANCHAN)', 'mon-an-kem-panchan'),
+(12, 'TRÁNG MIỆNG', 'trang-mieng'),
+(13, 'ĐỒ UỐNG', 'do-uong'),
+(14, 'BIA/RƯỢU HÀN QUỐC', 'bia-ruou-han-quoc'),
+(15, 'BUFFET TIÊU CHUẨN', 'buffet-tieu-chuan');
+
+-- Nhóm 1: CHEF'S RECOMMENDATION 
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(1, 'Dẻ sườn Hoàng đế & Dẻ sườn xốt Galbi', 569000, 'images/De-suon-hoang-de.jpg', 1, 1),
+(1, 'Dẻ sườn bò & Má heo', 459000, 'images/De-suon-bo-ma-heo.jpg', 1, 1),
+(1, 'Combo Bò Mỹ thượng hạng', 619000, 'images/Combo-bo-My-thuong-hang.jpg', 1, 1),
+(1, 'Dẻ sườn Hoàng đế & Sườn Đế vương', 679000, 'images/De-suon-hoang-de-suon-de-vuong.jpg', 1, 1);
+
+-- Nhóm 2: KABUBI SERIES
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(2, 'Liên sườn Karubi', 159000, 'images/Lien-suon-karubi.jpg', 0, 1),
+(2, 'Combo Karubi và Lõi vai tươi', 409000, 'images/Combo-Karubi.jpg', 1, 1);
+
+-- Nhóm 3: SALAD & KHAI VỊ
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(3, 'Salad Hoa Quả', 99000, 'images/Salad-hoa-qua.jpg', 0, 1),
+(3, 'Salad Mùa Xuân', 79000, 'images/Salad-mua-xuan.jpg', 0, 1),
+(3, 'Salad Cá Ngừ', 79000, 'images/Salad-ca-ngu.jpg', 0, 1);
+
+-- Nhóm 4: THỊT BÒ NƯỚNG HÀN
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(4, 'Má heo tươi', 169000, 'images/Ma-heo-tuoi.jpg', 0, 1),
+(4, 'Chilled Meat - Thăn lưng và Nạc mông', 769000, 'images/Chilled-Meat.png', 0, 1),
+(4, 'Chilled Meat - Dẻ sườn và Nạc mông', 699000, 'images/Chilled-Meat-1.png', 0, 1),
+(4, 'Chilled Meat - Dẻ sườn và Thăn lưng', 699000, 'images/Chilled-Meat-2.png', 0, 1),
+(4, 'Sườn non bò Mỹ có xương', 599000, 'images/Suon-non-bo-My.png', 0, 1),
+(4, 'Sườn non bò Mỹ cuộn có xương', 599000, 'images/Suon-non-bo-My-cuon.png', 0, 1),
+(4, 'Sườn Đế Vương tươi', 739000, 'images/Suon-De-Vuong-tuoi.jpg', 0, 1),
+(4, 'Thăn nội bò USDA Prime', 519000, 'images/Than-noi-bo.jpg', 0, 1),
+(4, 'Diềm bụng bò USDA Prime', 479000, 'images/Diem-bung-bo.jpg', 0, 1),
+(4, 'Thăn ngoại bò USDA Prime', 439000, 'images/Than-ngoai-bo.jpg', 0, 1),
+(4, 'Nạc lưng bò USDA Prime', 419000, 'images/Nac-lung-bo.jpg', 0, 1),
+(4, 'Sườn tươi hảo hạng', 349000, 'images/Suon-tuoi-hao-hang.jpg', 0, 1),
+(4, 'Sườn non bò Mỹ LA', 269000, 'images/Suon-non-bo-My-LA.jpg', 0, 1),
+(4, 'Dẻ sườn Hoàng Đế tươi', 219000, 'images/De-suon-Hoang-De-tuoi.jpg', 0, 1),
+(4, 'Bulgogi bò nướng vỉ gang', 239000, 'images/Bulgogi-bo-nuong-vi-gang.jpg', 0, 1),
+(4, 'Ba chỉ bò Mật Ong', 139000, 'images/Ba-chi-bo-mat-ong.jpg', 0, 1),
+(4, 'Gầu bò Mật Ong', 129000, 'images/Gau-bo-mat-ong.jpg', 0, 1),
+(4, 'Diềm cơ bò USDA Prime', 279000, 'images/Diem-co-bo.jpg', 0, 1);
+
+
+-- Nhóm 5: THỊT HEO NƯỚNG HÀN
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(5, 'Nạc vai heo tươi', 109000, 'images/Nac-vai-heo-tuoi.jpg', 0, 1),
+(5, 'Ba chỉ heo cuốn Phomai', 149000, 'images/Ba-chi-heo-cuon-Phomai.jpg', 0, 1);
+
+-- Nhóm 6: HẢI SẢN NƯỚNG
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(6, 'Combo Hải sản', 369000, 'images/Combo-hai-san.jpg', 1, 1),
+(6, 'Bạch tuộc xốt ớt', 249000, 'images/Bach-tuoc-xot-ot.jpg', 0, 1),
+(6, 'Bào ngư', 249000, 'images/Bao-ngu.jpg', 0, 1),
+(6, 'Tôm nướng', 229000, 'images/Tom-nuong.jpg', 0, 1),
+(6, 'Cá mút đá', 159000, 'images/Ca-mut-da.jpg', 0, 1);
+
+-- Nhóm 7: MÓN TRUYỀN THỐNG HÀN QUỐC
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(7, 'Bánh xèo hải sản', 139000, 'images/Banh-xeo-hai-san.jpg', 0, 1),
+(7, 'Tokbokki xào hải sản', 109000, 'images/Tokbokki-xao-hai-san.jpg', 0, 1),
+(7, 'Mandu truyền thống hàn Quốc', 79000, 'images/Mandu.jpg', 0, 1),
+(7, 'Set Kimbap', 69000, 'images/Kimbap.jpg', 0, 1),
+(7, 'Cuốc chân giò Hàn Quốc', 169000, 'images/Cuoc-chan-gio.jpg', 1, 1);
+
+-- Nhóm 8: CƠM/MỲ/MIẾN HÀN QUỐC
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(8, 'Miến xào Hàn Quốc', 109000, 'images/Mien-xao.jpg', 0, 1),
+(8, 'Cơm bát đá nóng', 119000, 'images/Com-bat-da-nong.jpg', 1, 1),
+(8, 'Mỳ đen', 99000, 'images/My-den.jpg', 0, 1),
+(8, 'Mỳ bò Hàn Quốc', 99000, 'images/My-bo.jpg', 0, 1),
+(8, 'Mỳ trộn lạnh', 99000, 'images/My-tron.jpg', 0, 1),
+(8, 'Cơm rang kim chi', 79000, 'images/Com-rang-kimchi.jpg', 0, 1),
+(8, 'Cơm Hàn Quốc', 10000, 'images/Com.jpg', 0, 1);
+
+-- Nhóm 9: CANH HẦM HÀN QUỐC 
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(9, 'Canh sườn bò', 199000, 'images/Canh-suon-bo.jpg', 0, 1),
+(9, 'Canh rong biển thịt', 109000, 'images/Canh-rong-bien-thit.jpg', 0, 1),
+(9, 'Canh kimchi', 109000, 'images/Canh-kimchi.jpg', 0, 1),
+(9, 'Canh lòng bò', 109000, 'images/Canh-long-bo.jpg', 0, 1);
+
+-- Nhóm 10: LẨU HÀN QUỐC
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(10, 'Lẩu lòng bò', 399000, 'images/Lau-long-bo.jpg', 0, 1),
+(10, 'Lẩu quân đội', 309000, 'images/Lau-quan-doi.jpg', 0, 1),
+(10, 'Lẩu kimchi', 309000, 'images/Lau-kimchi.jpg', 0, 1),
+(10, 'Lẩu Bulgogi', 309000, 'images/Lau-bulgogi.jpg', 1, 1);
+
+-- Nhóm 11: MÓN ĂN KÈM
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(11, 'Phomai nướng', 39000, 'images/Phomai-nuong.jpg', 0, 1),
+(11, 'Nấm nướng', 29000, 'images/Nam-nuong.jpg', 0, 1),
+(11, 'Miến Hàn Quốc', 29000, 'images/Mien.jpg', 0, 1),
+(11, 'Đĩa rau lẩu', 29000, 'images/Rau.jpg', 0, 1),
+(11, 'Mỳ Hàn Quốc', 19000, 'images/My.jpg', 0, 1);
+
+-- Nhóm 12: TRÁNG MIỆNG
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(12, 'Kem Caramen Flan cake', 15000, 'images/Caramen.jpg', 0, 1),
+(12, 'Mochi socola', 15000, 'images/Mochi-socola.jpg', 0, 1),
+(12, 'Mochi trà xanh', 15000, 'images/Mochi-matcha.jpg', 0, 1),
+(12, 'Kem tươi vị sữa chua', 15000, 'images/Kem-1.jpg', 0, 1),
+(12, 'Kem tươi vị Kiwi', 15000, 'images/Kem-2.jpg', 0, 1),
+(12, 'Kem tươi vị Berries', 15000, 'images/Kem-3.jpg', 0, 1),
+(12, 'Kem tươi vị Yuzu', 15000, 'images/Kem-4.jpg', 0, 1),
+(12, 'Kem tươi vị Chocolate', 15000, 'images/Kem-5.jpg', 0, 1),
+(12, 'Panna Cotta vị Yuzu', 15000, 'images/Panna-1.jpg', 0, 1),
+(12, 'Panna Cotta vị Berries', 15000, 'images/Panna-2.jpg', 0, 1),
+(12, 'Panna Cotta vị Kiwi', 15000, 'images/Panna-3.jpg', 0, 1),
+(12, 'Panna Cotta vị Cam', 15000, 'images/Panna-4.jpg', 0, 1);
+
+-- Nhóm 13: ĐỒ UỐNG
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(13, 'Trà Gạo Rang Hàn Quốc (Đá/Nóng)', 25000, NULL, 0, 1),
+(13, 'Nước Ép Thơm Nguyên Chất', 45000, NULL, 0, 1),
+(13, 'Coca Cola / Pepsi Lon', 20000, NULL, 0, 1);
+
+-- Nhóm 14: BIA/RƯỢU HÀN QUỐC
+INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
+(14, 'Rượu Soju Chamisul Truyền Thống', 69000, NULL, 0, 1),
+(14, 'Rượu Soju Vị Dâu / Bưởi / Nho', 69000, NULL, 0, 1),
+(14, 'Rượu Gạo Makgeolli Truyền Thống', 95000, NULL, 0, 1);
+
+INSERT INTO bookings (fullname, phone, email, booking_date, booking_time, guests_count, status, note, created_at) VALUES
+('Nguyễn Minh Đức', '0988655622', 'duc.nguyen@gmail.com', '2026-06-25', '19:00:00', 6, 'confirmed', 'Bàn gần cửa sổ, ăn buffet nướng', '2026-06-20 10:15:30'),
+('Trần Thị Thúy An', '0912445778', 'thuyan97@yahoo.com', '2026-06-25', '18:30:00', 2, 'confirmed', 'Tổ chức sinh nhật, cần chuẩn bị nến', '2026-06-21 14:22:05'),
+('Lê Hoàng Long', '0355689123', 'longlh.tech@gmail.com', '2026-06-26', '20:00:00', 4, 'pending', 'Cần ghế cho trẻ em nhỏ', '2026-06-22 08:11:42'),
+('Phạm Văn Nam', '0977123456', 'nampham@hotmail.com', '2026-06-24', '12:00:00', 12, 'confirmed', 'Đặt phòng VIP ăn tiếp khách công ty', '2026-06-19 17:45:12'),
+('Hoàng Thùy Linh', '0866555112', 'linhht@gmail.com', '2026-06-23', '19:30:00', 3, 'cancelled', 'Khách báo hủy do có lịch đột xuất', '2026-06-22 09:30:00'),
+('Vũ Anh Tuấn', '0904888999', 'tuanva@Fpt.edu.vn', '2026-06-27', '18:00:00', 8, 'pending', 'Ăn gia đình cuối tuần', '2026-06-22 15:20:18');
