@@ -1,0 +1,152 @@
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #fafafa;
+    color: #212529;
+}
+
+.font-serif {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+
+.btn-order {
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 700;
+    border-radius: 30px;
+    padding: 12px 35px;
+    text-decoration: none;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.btn-order:hover {
+    background-color: #ffc107 !important; 
+    color: #000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+}
+
+.add-btn {
+    background-color: #ff4a5a;
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background-color: #e03131;
+    transform: scale(1.15);
+}
+
+.hover-white:hover {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+.hero-section {
+    background-color: #0b0c10;
+    color: white;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.hero-img-box {
+    aspect-ratio: 4 / 5; 
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.col-6:hover .hero-img-box {
+    transform: scale(1.03);
+}
+
+.promo-blue-card {
+    background: linear-gradient(135deg, #1e56a0 0%, #113f7a 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 35px;
+    text-align: center;
+}
+
+.best-seller-bg {
+    background-color: #1a1614; 
+    border: 1px solid #2c2521;
+    border-radius: 16px;
+    padding: 40px 30px;
+}
+
+.dark-sidebar {
+    background-color: #241f1c; 
+    border: 1px solid #362e29;
+}
+
+.dark-menu-item {
+    color: #a89f98 !important; 
+    background-color: transparent !important;
+    font-weight: 500;
+    border: none;
+    padding: 14px 15px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.dark-menu-item:hover, 
+.dark-menu-item.active {
+    background-color: #362e29 !important; 
+    color: #ffc107 !important; 
+    padding-left: 22px;
+}
+
+.dark-food-card {
+    background-color: #241f1c !important;
+    border: 1px solid #362e29 !important;
+    margin-top: 70px; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark-food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
+    border-color: #ffc107 !important; 
+}
+
+.food-img-wrapper {
+    margin-top: -85px; 
+}
+
+.food-img-wrapper img {
+    border-color: #1a1614 !important; 
+    background-color: #1a1614;  
+}
+
+.page-link {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.page-link:hover:not(.bg-warning) {
+    background-color: #362e29 !important;
+    color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    transform: translateY(-2px);
+}
+
