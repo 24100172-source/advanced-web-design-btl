@@ -1,0 +1,135 @@
+<%- include('partials/header') %>
+<link rel="stylesheet" href="/css/menu.css">
+
+<%- include('partials/navbar') %>
+
+<main class="container my-4">
+
+  <section class="hero-section row g-0 mb-5 shadow-lg rounded-4 overflow-hidden" style="background-color: #0f1014; min-height: 250px;">
+    <div class="col-12 p-5 text-center d-flex flex-column justify-content-center align-items-center bg-dark" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('/images/menu-banner.jpg') center/cover;">
+      <h6 class="text-warning text-uppercase mb-3 tracking-wider" style="letter-spacing: 3px;">Khám Phá Hương Vị</h6>
+      <h1 class="fw-black display-4 mb-0 text-white font-serif">Thực Đơn Nhà Hàng</h1>
+      <p class="text-white-50 mt-3 mb-0">Hơn 50+ món nướng và lẩu mang đậm phong cách Hàn Quốc</p>
+    </div>
+  </section>
+
+  <section class="best-seller-section rounded-4 shadow-lg mb-5 pb-5 pt-4 px-3 best-seller-bg">
+    
+    <div class="row px-lg-3">
+      
+      <div class="col-md-3 mb-4 mb-md-0">
+        <div class="p-3 rounded-4 shadow-sm h-100 dark-sidebar position-sticky" style="top: 100px;">
+          <div class="bg-warning text-dark p-2 text-center rounded-3 mb-3 fw-bold text-uppercase small tracking-wide">
+            <i class="bi bi-list me-1"></i> Danh Mục
+          </div>
+          
+          <div class="list-group sidebar-menu-list custom-scrollbar border-0 gap-2">
+            <a href="/thuc-don" class="list-group-item list-group-item-action border-0 rounded-3 px-3 py-2 dark-menu-item <%= !locals.currentCategorySlug ? 'active' : '' %>" style="transition: 0.3s;">
+              Tất cả món ăn
+            </a>
+            
+            <% if(categories && categories.length > 0) { %>
+              <% categories.forEach((category) => { %>
+                <a href="/thuc-don?category=<%= category.slug %>" class="list-group-item list-group-item-action border-0 rounded-3 px-3 py-2 dark-menu-item <%= locals.currentCategorySlug === category.slug ? 'active' : '' %>" style="transition: 0.3s;">
+                  <%= category.name %>
+                </a>
+              <% }) %>
+            <% } else { %>
+              <p class="small text-white-50 p-2 text-center">Đang cập nhật danh mục.</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-9">
+        
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 mt-2 px-2">
+          <h4 class="text-white fw-bold mb-2 mb-md-0 font-serif">
+            <%= typeof currentCategoryName !== 'undefined' ? currentCategoryName : 'Tất Cả Món Ăn' %>
+          </h4>
+          
+          <div class="dropdown">
+            <button class="btn btn-outline-warning dropdown-toggle rounded-pill px-4 py-1 small" type="button" data-bs-toggle="dropdown">
+              Sắp xếp theo
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark border-secondary">
+              <li><a class="dropdown-item small" href="?sort=newest">Mới nhất</a></li>
+              <li><a class="dropdown-item small" href="?sort=price_asc">Giá: Thấp đến Cao</a></li>
+              <li><a class="dropdown-item small" href="?sort=price_desc">Giá: Cao xuống Thấp</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4 pb-4">
+          <% if(products && products.length > 0) { %>
+            <% products.forEach(product => { %>
+              
+              <div class="col mb-4">
+                <div class="card dark-food-card p-3 h-100 d-flex flex-column justify-content-between align-items-center rounded-4 shadow-sm">
+                  
+                  <div class="position-relative w-100 d-flex justify-content-center food-img-wrapper">
+                    <img src="/<%= product.image_url %>" alt="<%= product.name %>" class="rounded-circle object-fit-cover shadow-lg border border-4" style="width: 130px; height: 130px;" onerror="this.src='/images/default-food.jpg'">
+                  </div>
+                  
+                  <div class="card-body p-0 mt-3 text-center w-100">
+                    <h6 class="card-title fw-bold text-white px-2 lh-base mb-1" style="min-height: 40px;"><%= product.name %></h6>
+                    <p class="text-white-50 small mb-0 px-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.8rem;">
+                      <%= product.description || 'Hương vị chuẩn Hàn Quốc.' %>
+                    </p>
+                  </div>
+                  
+                  <div class="w-100 d-flex justify-content-between align-items-center mt-3 px-2">
+                    <span class="fw-bold text-warning fs-5">
+                      <%= product.price.toLocaleString('vi-VN') %>đ
+                    </span>
+                    <button class="add-btn shadow border-0" title="Thêm vào giỏ hàng">
+                      <i class="bi bi-plus-lg text-white"></i>
+                    </button>
+                  </div>
+                  
+                </div>
+              </div>
+              
+            <% }) %>
+          <% } else { %>
+            <div class="col-12 text-center py-5">
+              <div class="text-white-50 mb-3"><i class="bi bi-search fs-1"></i></div>
+              <p class="text-white fs-5 font-serif">Chưa có món ăn nào trong danh mục này!</p>
+            </div>
+          <% } %>
+        </div>
+
+        <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+          <nav aria-label="Page navigation" class="mt-4 border-top border-secondary pt-4">
+            <ul class="pagination justify-content-center mb-0 gap-2">
+              <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                <a class="page-link rounded-circle bg-transparent border-secondary text-white-50 p-2 d-flex align-items-center justify-content-center" href="?page=<%= currentPage - 1 %>" style="width: 40px; height: 40px;">
+                  <i class="bi bi-chevron-left"></i>
+                </a>
+              </li>
+              
+              <% for(let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item">
+                  <a class="page-link rounded-circle p-2 d-flex align-items-center justify-content-center <%= currentPage === i ? 'bg-warning text-dark border-warning fw-bold' : 'bg-transparent border-secondary text-white' %>" href="?page=<%= i %>" style="width: 40px; height: 40px;">
+                    <%= i %>
+                  </a>
+                </li>
+              <% } %>
+              
+              <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                <a class="page-link rounded-circle bg-transparent border-secondary text-white-50 p-2 d-flex align-items-center justify-content-center" href="?page=<%= currentPage + 1 %>" style="width: 40px; height: 40px;">
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        <% } %>
+
+      </div>
+      
+    </div>
+  </section>
+
+</main>
+
+<%- include('partials/footer') %>
