@@ -10,6 +10,10 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/tin-tuc', (req, res) => {
+    res.render('news');
+});
+
 app.get('/', async (req, res) => {
     try {
         const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
