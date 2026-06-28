@@ -84,6 +84,10 @@ app.post('/dat-ban', async (req, res) => {
     }
 });
 
+app.get('/gioi-thieu', (req, res) => {
+    res.render('gthieu');
+});
+
 app.listen(PORT, () => {
     console.log(`Server đang chạy tại: http://localhost:${PORT}`);
 });
