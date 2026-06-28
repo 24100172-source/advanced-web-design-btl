@@ -1,0 +1,29 @@
+.hero-section {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.bg-dark {
+    background-color: #1a1614 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.feature-card {
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+}
+
+.feature-card:hover {
+    border-color: #ff4a5a !important;
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.rounded-4 {
+    border-radius: 16px !important;
+}
