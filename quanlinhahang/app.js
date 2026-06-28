@@ -14,6 +14,14 @@ app.get('/new', (req, res) => {
     res.render('news');
 });
 
+app.get('/lien-he', (req, res) => {
+    res.render('dat-ban'); 
+});
+
+app.get('/dat-ban', (req, res) => {
+    res.render('dat-ban');
+});
+
 app.get('/', async (req, res) => {
     try {
         const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
