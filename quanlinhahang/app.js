@@ -43,12 +43,40 @@ app.get('/thuc-don', async (req, res) => {
             categories: categories, 
             products: products,
             currentCategorySlug: categorySlug,
-            currentPage: 1, // Bạn có thể mở rộng logic phân trang sau
+            currentPage: 1, 
             totalPages: 1
         });
     } catch (error) {
         console.error("Lỗi lấy dữ liệu thực đơn: ", error);
         res.status(500).send("Không thể tải thực đơn!");
+    }
+});
+
+app.get('/dat-ban', (req, res) => {
+    res.render('dat-ban');
+});
+
+app.post('/dat-ban', async (req, res) => {
+    try {
+        const { name, phone, date, time, guests, notes } = req.body;
+
+        console.log('----- CÓ KHÁCH ĐẶT BÀN -----');
+        console.log(`Tên: ${name} | SĐT: ${phone}`);
+        console.log(`Lúc: ${time} ngày ${date} | Số người: ${guests}`);
+        console.log(`Ghi chú: ${notes || 'Không có'}`);
+
+        res.send(`
+            <div style="text-align: center; margin-top: 100px; font-family: sans-serif;">
+                <h2 style="color: #28a745;">🎉 Đặt bàn thành công!</h2>
+                <p style="color: #555;">Cảm ơn <b>${name}</b>. Chúng tôi sẽ gọi lại vào số <b>${phone}</b> để xác nhận.</p>
+                <br>
+                <a href="/" style="padding: 12px 24px; background-color: #ffc107; color: #000; text-decoration: none; border-radius: 30px; font-weight: bold;">Trở về trang chủ</a>
+            </div>
+        `);
+
+    } catch (error) {
+        console.error("Lỗi khi xử lý đặt bàn: ", error);
+        res.status(500).send("Lỗi Server: Không thể xử lý đơn đặt bàn lúc này!");
     }
 });
 

@@ -1,0 +1,59 @@
+.tracking-wider {
+    letter-spacing: 2px !important;
+}
+
+#booking-form .form-control, 
+#booking-form .form-select {
+    border: 1px solid #362e29 !important;
+    transition: all 0.3s ease-in-out;
+}
+
+#booking-form .form-control:focus, 
+#booking-form .form-select:focus {
+    background-color: #241f1c !important;
+    color: #ffffff !important;
+    border-color: #ffc107 !important; /* Đổi viền xanh Bootstrap thành vàng Grill House */
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.15) !important; /* Đổ bóng vàng nhẹ */
+}
+
+#booking-form .form-control::placeholder {
+    color: #6c757d !important;
+    opacity: 0.6;
+}
+
+#booking-form .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffc107' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+#booking-form input[type="date"]::-webkit-calendar-picker-indicator,
+#booking-form input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.8) sepia(1) saturate(5) hue-rotate(15deg);
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+}
+
+#booking-form input[type="date"]::-webkit-calendar-picker-indicator:hover,
+#booking-form input[type="time"]::-webkit-calendar-picker-indicator:hover {
+    filter: invert(1) grayscale(0) saturate(1) sepia(0);
+    background-color: rgba(255, 193, 7, 0.2);
+}
+
+@media (max-width: 576px) {
+    #booking-form input[type="date"], 
+    #booking-form input[type="time"] {
+        font-size: 14px;
+    }
+}
+
+
+.btn-light.d-inline-flex {
+    transition: all 0.3s ease;
+}
+
+.btn-light.d-inline-flex:hover {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+}
