@@ -10,8 +10,16 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/tin-tuc', (req, res) => {
+app.get('/new', (req, res) => {
     res.render('news');
+});
+
+app.get('/lien-he', (req, res) => {
+    res.render('dat-ban'); 
+});
+
+app.get('/dat-ban', (req, res) => {
+    res.render('dat-ban');
 });
 
 app.get('/', async (req, res) => {
