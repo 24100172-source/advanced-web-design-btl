@@ -1,49 +1,67 @@
-<div class="bg-light py-2 border-bottom border-secondary-subtle small">
+<div class="bg-light py-2 border-bottom border-secondary-subtle small d-none d-md-block">
   <div class="container d-flex justify-content-between align-items-center">
     <div>
-      <span class="me-3"><i class="bi bi-telephone text-danger"></i> 0988 655 622</span>
-      <span><i class="bi bi-clock"></i> 9h00 - 23h00</span>
+      <span class="me-3"><i class="bi bi-telephone text-danger" aria-hidden="true"></i> 0988 655 622</span>
+      <span><i class="bi bi-clock" aria-hidden="true"></i> 9h00 - 23h00</span>
     </div>
     <div>
       <a href="/auth/register" class="text-dark text-decoration-none me-3">Đăng ký</a>
       <a href="/auth/login" class="text-dark text-decoration-none me-3">Đăng nhập</a>
-      <a href="/gio-hang" class="text-dark position-relative"><i class="bi bi-bag fs-5"></i></a>
+      <a href="/gio-hang" class="text-dark position-relative text-decoration-none">
+        <i class="bi bi-bag fs-5" aria-hidden="true"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+          0
+        </span>
+      </a>
     </div>
   </div>
 </div>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm sticky-top">
-  <div class="container">
-    <div class="navbar-nav w-100 d-flex justify-content-between align-items-center flex-row">
-      <div class="d-flex gap-4">
-        <a class="nav-link fw-bold text-uppercase text-dark" href="/">Trang chủ</a>
-        <a class="nav-link fw-bold text-uppercase text-dark" href="/gioi-thieu">Giới thiệu</a>
-        <a class="nav-link fw-bold text-uppercase text-dark" href="/thuc-don">Thực đơn</a>
-      </div>
+  <div class="container position-relative"> 
+    
+    <a class="navbar-brand d-lg-none" href="/">
+      <img src="/images/logo.png" alt="Grill House" style="height: 50px; border-radius: 50%; border: 2px solid #ff4a5a;">
+    </a>
+
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
       
-      <a class="navbar-brand m-0" href="/">
-        <img src="/images/logo.png" alt="Grill House" style="height: 65px; border-radius: 50%; border: 2px solid #ff4a5a;">
+      <ul class="navbar-nav me-auto d-flex gap-lg-3 align-items-lg-center mb-3 mb-lg-0 text-center text-lg-start">
+        <li class="nav-item"><a class="nav-link fw-bold text-uppercase text-dark" href="/">Trang chủ</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold text-uppercase text-dark" href="/gioi-thieu">Giới thiệu</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold text-uppercase text-dark" href="/thuc-don">Thực đơn</a></li>
+      </ul>
+
+      <a class="navbar-brand d-none d-lg-block mx-auto position-absolute top-50 start-50 translate-middle" href="/">
+        <img src="/images/logo.png" alt="Grill House" style="height: 65px; border-radius: 50%; border: 2px solid #ff4a5a; background-color: white;">
       </a>
 
-      <div class="d-flex gap-4">
-        <a class="nav-link fw-bold text-uppercase text-dark" href="/new">Tin tức</a>
-        <a class="nav-link fw-bold text-uppercase text-dark" href="/lien-he">Liên hệ</a>
-        <a class="nav-link fw-bold text-uppercase text-danger border border-danger px-3 rounded-pill" href="/dat-ban">Đặt bàn</a>
-      </div>
+      <ul class="navbar-nav ms-auto d-flex gap-lg-3 align-items-lg-center text-center text-lg-start">
+        <li class="nav-item"><a class="nav-link fw-bold text-uppercase text-dark" href="/tin-tuc">Tin tức</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold text-uppercase text-dark" href="/lien-he">Liên hệ</a></li>
+        <li class="nav-item mt-2 mt-lg-0"><a class="nav-link fw-bold text-uppercase text-danger border border-danger px-3 rounded-pill d-inline-block" href="/dat-ban">Đặt bàn</a></li>
+      </ul>
     </div>
+
   </div>
 </nav>
 
 <div class="container my-4">
   <div class="row justify-content-center">
     <div class="col-md-6 d-flex align-items-center gap-2">
-      <div class="input-group">
-        <input type="text" class="form-control bg-light rounded-pill px-4 border-0 shadow-sm" placeholder="Nhập tìm kiếm món ăn...">
-        <button class="btn btn-outline-secondary border-0 position-absolute end-0 top-50 translate-middle-y me-2 z-3" type="button">
-          <i class="bi bi-search text-muted"></i>
+      
+      <div class="position-relative w-100">
+        <input type="text" class="form-control bg-light rounded-pill px-4 py-2 border-0 shadow-sm" placeholder="Nhập tìm kiếm món ăn...">
+        <button class="btn border-0 position-absolute end-0 top-50 translate-middle-y me-1 z-3" type="button">
+          <i class="bi bi-search text-muted" aria-hidden="true"></i>
         </button>
       </div>
-      <a href="#" class="text-dark fs-4 ms-2"><i class="bi bi-journal-text"></i></a>
+
+      <a href="#" class="text-dark fs-4 ms-2" title="Xem danh mục"><i class="bi bi-journal-text" aria-hidden="true"></i></a>
     </div>
   </div>
 </div>

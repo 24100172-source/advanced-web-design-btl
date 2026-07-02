@@ -1,14 +1,14 @@
-<%- include('partials/header') %>
 <link rel="stylesheet" href="/css/dat-ban.css">
 
+<%- include('partials/header') %>
 <%- include('partials/navbar') %>
 
 <main class="container my-5 py-4">
   
   <div class="text-center mb-5">
-    <h5 class="text-warning">GRILL HOUSE</h5>
-    <h1 class="fw-black display-5 mb-3 font-serif" style="transform: translateX(-8px);">Đặt Bàn Trực Tuyến</h1>
-    <p class="text-secondary mx-auto" style="max-width: 600px;">
+    <h5 class="text-warning tracking-wider" style="letter-spacing: 2px;">GRILL HOUSE</h5>
+    <h1 class="fw-black display-5 mb-3 font-serif">Đặt Bàn Trực Tuyến</h1>
+    <p class="text-white-50 mx-auto" style="max-width: 600px;">
       Giảm ngay 2% khi đặt bàn trước qua website. Vui lòng điền thông tin bên dưới để chúng tôi chuẩn bị không gian chu đáo nhất cho bạn.
     </p>
   </div>
@@ -16,46 +16,60 @@
   <div class="row g-5 justify-content-center">
     
     <div class="col-lg-7">
-      <div class="p-4 p-md-5 rounded-4 shadow-lg h-100" style="background-color: #1a1614; border: 1px solid #362e29;">
+      <div class="p-4 p-md-5 rounded-4 shadow-lg h-100" style="background-color: #1a1c23; border: 1px solid #2a2c35;">
+        
+        <% if (locals.success_msg) { %>
+          <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 small" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> <%= success_msg %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+        <% if (locals.error_msg) { %>
+          <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-4 small" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> <%= error_msg %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+
         <form action="/dat-ban" method="POST" id="booking-form">
           <div class="row g-4">
             
             <div class="col-md-6">
               <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Họ và tên *</label>
-              <input type="text" name="name" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white;" required placeholder="Nguyễn Văn A">
+              <input type="text" name="name" class="form-control py-2 px-3 border-secondary" style="background-color: #111217; color: white;" required placeholder="Nguyễn Văn A">
             </div>
             
             <div class="col-md-6">
               <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Số điện thoại *</label>
-              <input type="tel" name="phone" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white;" required placeholder="0988 xxx xxx">
+              <input type="tel" name="phone" pattern="0[0-9]{9}" title="Vui lòng nhập số điện thoại hợp lệ gồm 10 chữ số bắt đầu bằng số 0" class="form-control py-2 px-3 border-secondary" style="background-color: #111217; color: white;" required placeholder="0988xxxxxx">
             </div>
             
             <div class="col-md-6">
               <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Ngày đến *</label>
-              <input type="date" name="date" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white; color-scheme: dark;" required>
+              <input type="date" name="date" id="booking-date" class="form-control py-2 px-3 border-secondary" style="background-color: #111217; color: white; color-scheme: dark;" required>
             </div>
             
             <div class="col-md-6">
               <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Giờ đến *</label>
-              <input type="time" name="time" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white; color-scheme: dark;" required>
+              <input type="time" name="time" class="form-control py-2 px-3 border-secondary" style="background-color: #111217; color: white; color-scheme: dark;" required>
             </div>
             
             <div class="col-12">
               <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Số người *</label>
-              <select name="guests" class="form-select py-2 px-3 border-secondary" style="background-color: #241f1c; color: white;">
+              <select name="guests" class="form-select py-2 px-3 border-secondary" style="background-color: #111217; color: white;">
                 <option value="2" selected>2 người</option>
                 <option value="3">3 người</option>
                 <option value="4">4 người</option>
                 <option value="5">5 người</option>
                 <option value="6">6 người</option>
-                <option value="7">7 - 10 người</option>
+                <option value="10">7 - 10 người</option>
                 <option value="11">Trên 10 người (Vui lòng liên hệ trực tiếp)</option>
               </select>
             </div>
             
             <div class="col-12">
               <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Ghi chú (Tùy chọn)</label>
-              <textarea name="notes" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white;" rows="4" placeholder="Ví dụ: Cần ghế cho trẻ em, ăn chay, kỷ niệm sinh nhật..."></textarea>
+              <textarea name="notes" class="form-control py-2 px-3 border-secondary" style="background-color: #111217; color: white;" rows="4" placeholder="Ví dụ: Cần ghế cho trẻ em, ăn chay, kỷ niệm sinh nhật..."></textarea>
             </div>
             
             <div class="col-12 mt-5">
@@ -71,7 +85,7 @@
 
     <div class="col-lg-4 d-flex flex-column gap-4">
       
-      <div class="p-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #2c2f38 0%, #1e2026 100%); border: 1px solid #3f424f;">
+      <div class="p-4 rounded-4 shadow-sm" style="background-color: #1a1c23; border: 1px solid #2a2c35;">
         <h5 class="text-white fw-bold mb-4 font-serif">Giờ Mở Cửa</h5>
         <div class="d-flex justify-content-between border-bottom border-secondary pb-2 mb-3 text-white-50">
           <span>Thứ 2 - Thứ 6</span>
@@ -88,16 +102,26 @@
       </div>
 
       <div class="p-4 rounded-4 shadow-sm text-center flex-grow-1 d-flex flex-column justify-content-center" style="background-color: #7a1212; border: 1px solid #8c1a1a;">
-        <i class="bi bi-headset text-white opacity-75 display-4 mb-3"></i>
+        <i class="bi bi-headset text-white opacity-75 display-4 mb-3" aria-hidden="true"></i>
         <h5 class="text-white fw-bold mb-2">Cần hỗ trợ ngay?</h5>
         <p class="text-white-50 small mb-4">Nhân viên của chúng tôi luôn sẵn sàng hỗ trợ bạn thay đổi hoặc hủy lịch đặt bàn.</p>
         <a href="tel:0988655622" class="btn btn-light rounded-pill fw-bold text-danger py-2 px-4 d-inline-flex align-items-center justify-content-center m-auto">
-          <i class="bi bi-telephone-fill me-2"></i> 0988 655 622
+          <i class="bi bi-telephone-fill me-2" aria-hidden="true"></i> 0988 655 622
         </a>
       </div>
 
     </div>
   </div>
 </main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('booking-date');
+    if(dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.min = today;
+    }
+  });
+</script>
 
 <%- include('partials/footer') %>

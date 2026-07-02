@@ -1,0 +1,62 @@
+.text-dark-theme {
+    color: #0b0c10 !important;
+}
+
+.contact-card {
+    background-color: #1a1614; 
+    border: 1px solid #2c2521;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-card:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    background-color: #241f1c;
+    border: 1px solid #362e29;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover .icon-box {
+    background-color: #362e29;
+    border-color: #ffc107;
+    transform: translateY(-3px);
+}
+
+.dark-input {
+    background-color: #241f1c !important;
+    border: 1px solid #362e29 !important;
+    color: #ffffff !important;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.dark-input::placeholder {
+    color: #6c757d !important;
+    font-size: 0.9rem;
+}
+
+.dark-input:focus {
+    background-color: #1a1614 !important;
+    border-color: #ffc107 !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.15) !important;
+    outline: none;
+}
+
+.tracking-wide {
+    letter-spacing: 1px;
+}
+
+.min-h-300 {
+    min-height: 300px;
+}

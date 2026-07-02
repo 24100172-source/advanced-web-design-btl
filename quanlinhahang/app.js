@@ -10,22 +10,12 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/new', (req, res) => {
-    res.render('news');
-});
-
-app.get('/lien-he', (req, res) => {
-    res.render('dat-ban'); 
-});
-
-app.get('/dat-ban', (req, res) => {
-    res.render('dat-ban');
-});
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.get('/', async (req, res) => {
     try {
         const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
-
         const [bestSellers] = await db.query("SELECT * FROM products WHERE is_bestseller = 1 AND status = 1");
 
         res.render('home', { 
@@ -64,8 +54,28 @@ app.get('/thuc-don', async (req, res) => {
     }
 });
 
+app.get('/tin-tuc', async (req, res) => {
+    try {
+        const [rows] = await db.query("SELECT * FROM articles ORDER BY created_at DESC");
+
+        res.render('news', { articles: rows }); 
+        
+    } catch (error) {
+        console.error("Lỗi lấy dữ liệu tin tức: ", error);
+        res.status(500).send("Lỗi Server: Không thể tải dữ liệu tin tức!");
+    }
+});
+
+app.get('/lien-he', (req, res) => {
+    res.render('lien-he'); 
+});
+
 app.get('/dat-ban', (req, res) => {
     res.render('dat-ban');
+});
+
+app.get('/gioi-thieu', (req, res) => {
+    res.render('gthieu');
 });
 
 app.post('/dat-ban', async (req, res) => {
@@ -77,23 +87,31 @@ app.post('/dat-ban', async (req, res) => {
         console.log(`Lúc: ${time} ngày ${date} | Số người: ${guests}`);
         console.log(`Ghi chú: ${notes || 'Không có'}`);
 
-        res.send(`
-            <div style="text-align: center; margin-top: 100px; font-family: sans-serif;">
-                <h2 style="color: #28a745;">🎉 Đặt bàn thành công!</h2>
-                <p style="color: #555;">Cảm ơn <b>${name}</b>. Chúng tôi sẽ gọi lại vào số <b>${phone}</b> để xác nhận.</p>
-                <br>
-                <a href="/" style="padding: 12px 24px; background-color: #ffc107; color: #000; text-decoration: none; border-radius: 30px; font-weight: bold;">Trở về trang chủ</a>
-            </div>
-        `);
+        res.render('dat-ban', {
+            success_msg: `Cảm ơn ${name}. Hệ thống đã ghi nhận lịch hẹn. Chúng tôi sẽ gọi lại vào số ${phone} để xác nhận sớm nhất!`
+        });
 
     } catch (error) {
         console.error("Lỗi khi xử lý đặt bàn: ", error);
-        res.status(500).send("Lỗi Server: Không thể xử lý đơn đặt bàn lúc này!");
+        res.render('dat-ban', {
+            error_msg: "Đã có lỗi xảy ra từ phía máy chủ. Vui lòng thử lại sau!"
+        });
     }
 });
 
-app.get('/gioi-thieu', (req, res) => {
-    res.render('gthieu');
+app.post('/lien-he', async (req, res) => {
+    try {
+        const { name, phone, subject, message } = req.body;
+        
+        console.log('----- CÓ TIN NHẮN LIÊN HỆ -----');
+        console.log(`Từ: ${name} (${phone})`);
+        console.log(`Tiêu đề: ${subject || 'Không có'}`);
+        console.log(`Nội dung: ${message}`);
+
+        res.send(`<script>alert('Gửi tin nhắn thành công!'); window.location.href='/lien-he';</script>`);
+    } catch (error) {
+        res.send(`<script>alert('Gửi tin nhắn thất bại!'); window.location.href='/lien-he';</script>`);
+    }
 });
 
 app.listen(PORT, () => {

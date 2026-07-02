@@ -3,45 +3,66 @@
 
 <%- include('partials/navbar') %>
 
-<main class="container my-5 py-4">
-    <div class="text-center mb-5">
-        <h5 class="text-warning">GRILL HOUSE</h5>
-        <h1 class="fw-black display-5 mb-3 font-serif" style="transform: translateX(-8px);">TIN TỨC & SỰ KIỆN</h1>
-        <p class="text-secondary mx-auto" style="max-width: 600px;">
-            Cập nhật những chương trình ưu đãi và sự kiện mới nhất từ nhà hàng của chúng tôi.
-        </p>
+<main class="container my-4">
+  
+  <section class="news-section rounded-4 shadow-lg mb-5 pb-5 pt-4 px-3 px-md-4 dark-section-bg">
+    
+    <div class="text-center mb-5 mt-3">
+      <h6 class="text-warning text-uppercase mb-2 tracking-wider fw-bold" style="letter-spacing: 2px;">Cập Nhật Gần Đây</h6>
+      <h2 class="fw-bold text-white font-serif fs-1">Tin Tức & Sự Kiện</h2>
+      <p class="text-white-50 mx-auto mt-3" style="max-width: 600px;">
+        Đừng bỏ lỡ những chương trình ưu đãi đặc biệt và sự kiện ẩm thực hấp dẫn nhất từ Grill House.
+      </p>
     </div>
-
-    <div class="row g-4 justify-content-center">
-        <div class="col-lg-4 col-md-6">
-            <div class="card h-100 border-secondary bg-dark text-white shadow-lg">
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500" class="card-img-top" alt="Khai trương chi nhánh" style="height: 200px; object-fit: cover;">
-                <div class="card-body p-4">
-                    <span class="text-warning small text-uppercase fw-bold">Sự kiện</span>
-                    <h5 class="card-title mt-2 fw-bold">Tưng bừng khai trương chi nhánh thứ 3</h5>
-                    <p class="card-text text-white-50 small">Nhân dịp khai trương chi nhánh mới, nhà hàng tặng ngay ưu đãi giảm giá 20% cho toàn bộ dịch vụ đặt bàn trước qua website...</p>
+    
+    <div class="row g-4 justify-content-center px-lg-3">
+      
+      <% if (typeof articles !== 'undefined' && articles.length > 0) { %>
+        <% articles.forEach(article => { %>
+          
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card dark-news-card h-100 d-flex flex-column rounded-4 shadow-sm overflow-hidden">
+              
+              <div class="position-relative w-100 overflow-hidden" style="height: 240px;">
+                <img src="<%= article.image_url || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500' %>" 
+                     alt="<%= article.title %>" class="w-100 h-100 object-fit-cover img-zoom">
+                <span class="position-absolute top-0 start-0 bg-warning text-dark px-3 py-1 m-3 rounded-pill fw-bold small text-uppercase shadow-sm">
+                  <%= article.tag || 'Tin tức' %>
+                </span>
+              </div>
+              
+              <div class="card-body p-4 d-flex flex-column">
+                <h5 class="card-title fw-bold text-white mb-3 lh-base line-clamp-2">
+                  <%= article.title %>
+                </h5>
+                <p class="card-text text-white-50 small mb-4 line-clamp-3 flex-grow-1" style="line-height: 1.6;">
+                  <%= article.summary %>
+                </p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top" style="border-color: #362e29 !important;">
+                  <span class="text-white-50 small d-flex align-items-center">
+                    <i class="bi bi-calendar3 me-2 text-warning"></i>
+                    <%= article.created_at ? new Date(article.created_at).toLocaleDateString('vi-VN') : '28/06/2026' %>
+                  </span>
+                  <a href="#" class="text-warning text-decoration-none fw-bold small hover-white d-flex align-items-center">
+                    Đọc tiếp <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
                 </div>
-                <div class="card-footer border-secondary bg-transparent d-flex justify-content-between align-items-center">
-                    <small class="text-white-50">28/06/2026</small>
-                    <a href="#" class="btn btn-sm btn-outline-warning">Đọc tiếp</a>
-                </div>
+              </div>
+              
             </div>
-        </div>
+          </div>
 
-        <div class="col-lg-4 col-md-6">
-            <div class="card h-100 border-secondary bg-dark text-white shadow-lg">
-                <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500" class="card-img-top" alt="Menu mùa hè" style="height: 200px; object-fit: cover;">
-                <div class="card-body p-4">
-                    <span class="text-warning small text-uppercase fw-bold">Ẩm thực</span>
-                    <h5 class="card-title mt-2 fw-bold">Ra mắt Menu Mùa Hè mới</h5>
-                    <p class="card-text text-white-50 small">Đội ngũ đầu bếp chuẩn 5 sao vừa cho ra mắt bộ sưu tập các món ăn mùa hè sử dụng nguyên liệu tươi sạch, giúp thanh nhiệt...</p>
-                </div>
-                <div class="card-footer border-secondary bg-transparent d-flex justify-content-between align-items-center">
-                    <small class="text-white-50">25/06/2026</small>
-                    <a href="#" class="btn btn-sm btn-outline-warning">Đọc tiếp</a>
-                </div>
-            </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12 text-center py-5">
+          <p class="text-white-50 fs-5 font-serif">Đang cập nhật tin tức mới...</p>
         </div>
+      <% } %>
+
     </div>
+  </section>
+
 </main>
+
 <%- include('partials/footer') %>
