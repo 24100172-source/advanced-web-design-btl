@@ -1,0 +1,84 @@
+<%- include('partials/header') %>
+<link rel="stylesheet" href="/css/dat-ban.css">
+
+<%- include('partials/navbar') %>
+
+<main class="container my-5 py-4">
+  
+  <div class="text-center mb-5">
+    <h5 class="text-warning">GRILL HOUSE</h5>
+    <h1 class="fw-black display-5 mb-3 font-serif" style="transform: translateX(-8px);">Liên Hệ Với Chúng Tôi</h1>
+    <p class="text-secondary mx-auto" style="max-width: 600px;">
+      Mọi ý kiến đóng góp hoặc thắc mắc vui lòng gửi thông tin bên dưới, Grill House sẽ phản hồi bạn trong thời gian sớm nhất.
+    </p>
+  </div>
+
+  <div class="row g-5 justify-content-center">
+    
+    <div class="col-lg-7">
+      <div class="p-4 p-md-5 rounded-4 shadow-lg h-100" style="background-color: #1a1614; border: 1px solid #362e29;">
+        <!-- Form gửi dữ liệu sang backend đặt bàn xử lý luôn -->
+        <form action="/dat-ban" method="POST" id="contact-form">
+          <div class="row g-4">
+            
+            <div class="col-md-6">
+              <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Họ và tên *</label>
+              <input type="text" name="fullname" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white;" required placeholder="Nguyễn Văn A">
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Số điện thoại *</label>
+              <input type="tel" name="phone" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white;" required placeholder="0988 xxx xxx">
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Ngày hẹn *</label>
+              <input type="date" name="booking_date" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white; color-scheme: dark;" required>
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Giờ hẹn *</label>
+              <input type="time" name="booking_time" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white; color-scheme: dark;" required>
+            </div>
+            
+            <div class="col-12">
+              <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Số lượng người *</label>
+              <select name="guests_count" class="form-select py-2 px-3 border-secondary" style="background-color: #241f1c; color: white;">
+                <option value="2" selected>2 người</option>
+                <option value="3">3 người</option>
+                <option value="4">4 người</option>
+                <option value="5">5 người</option>
+                <option value="6">6 người</option>
+              </select>
+            </div>
+            
+            <div class="col-12">
+              <label class="form-label text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Nội dung tin nhắn / Ghi chú</label>
+              <textarea name="note" class="form-control py-2 px-3 border-secondary" style="background-color: #241f1c; color: white;" rows="4" placeholder="Nhập nội dung bạn muốn liên hệ hoặc ghi chú đặt bàn..."></textarea>
+            </div>
+            
+            <div class="col-12 mt-5">
+              <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill py-3 text-dark text-uppercase shadow-lg btn-order fs-6">
+                Gửi Tin Nhắn Liên Hệ
+              </button>
+            </div>
+            
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Cột thông tin địa chỉ -->
+    <div class="col-lg-4 d-flex flex-column gap-4">
+      <div class="p-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #2c2f38 0%, #1e2026 100%); border: 1px solid #3f424f;">
+        <h5 class="text-white fw-bold mb-4 font-serif">Thông Tin Liên Hệ</h5>
+        <p class="text-white-50 small"><i class="bi bi-geo-alt-fill text-warning me-2"></i> Số 168 Phố Trần Thái Tông, Cầu Giấy, Hà Nội[cite: 3]</p>
+        <p class="text-white-50 small"><i class="bi bi-telephone-fill text-warning me-2"></i> 0988 655 622[cite: 3]</p>
+        <p class="text-white-50 small"><i class="bi bi-envelope-fill text-warning me-2"></i> contact@grillhouse.com.vn[cite: 3]</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<%- include('partials/footer') %>

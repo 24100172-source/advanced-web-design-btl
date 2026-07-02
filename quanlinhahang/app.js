@@ -10,6 +10,10 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/lien-he', (req, res) => {
+    res.render('lien-he');
+});
+
 app.get('/new', (req, res) => {
     res.render('news');
 });
