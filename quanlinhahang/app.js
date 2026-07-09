@@ -66,6 +66,18 @@ app.get('/tin-tuc', async (req, res) => {
     }
 });
 
+app.get('/dieu-khoan', (req, res) => {
+    res.render('dieu-khoan');
+});
+
+app.get('/chinh-sach-thanh-vien', (req, res) => {
+    res.render('chinh-sach-thanh-vien');
+});
+
+app.get('/bao-mat', (req, res) => {
+    res.render('bao-mat');
+});
+
 app.get('/lien-he', (req, res) => {
     res.render('lien-he'); 
 });

@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+<div class="container my-5">
+    <div class="card border-0 shadow-lg" style="background: #1a1a1a; border-radius: 15px; overflow: hidden;">
+        <div style="height: 5px; background: linear-gradient(90deg, #ffc107, #28a745);"></div>
+        <div class="card-body p-5">
+            <h2 class="text-warning mb-4 font-weight-bold text-uppercase border-bottom pb-3" style="letter-spacing: 1px;">
+                <i class="fas fa-shield-alt mr-2"></i>Chính Sách Bảo Mật
+            </h2>
+            <p class="text-white-50 lead mb-4 font-italic" style="font-size: 1.1rem; line-height: 1.6;">
+                Grill House cam kết bảo mật tuyệt đối thông tin cá nhân của khách hàng:
+            </p>
+            <ul class="list-unstyled text-light" style="font-size: 1.05rem;">
+                <li class="mb-3 d-flex align-items-start">
+                    <span class="text-success mr-3" style="font-size: 1.2rem;">✔</span>
+                    <span>Thông tin số điện thoại, email phục vụ cho việc xác nhận đặt bàn và chăm sóc khách hàng.</span>
+                </li>
+                <li class="mb-3 d-flex align-items-start">
+                    <span class="text-success mr-3" style="font-size: 1.2rem;">✔</span>
+                    <span>Không chia sẻ, mua bán dữ liệu khách hàng cho bất kỳ bên thứ ba nào.</span>
+                </li>
+                <li class="mb-3 d-flex align-items-start">
+                    <span class="text-success mr-3" style="font-size: 1.2rem;">✔</span>
+                    <span>Hệ thống lưu trữ dữ liệu an toàn, mã hóa mật khẩu theo tiêu chuẩn hệ thống.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<style>
+    .transition-all {
+        transition: all 0.3s ease-in-out;
+    }
+    .transition-all:hover {
+        background-color: #ffc107 !important;
+        color: #111 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+    }
+</style>
+
+<div class="text-center mt-5">
+    <a href="/" class="btn btn-outline-warning px-4 py-2 font-weight-bold text-uppercase transition-all" 
+       style="border-radius: 30px; border-width: 2px; letter-spacing: 1px;">
+        <i class="fas fa-arrow-left mr-2"></i> Quay lại trang chủ
+    </a>
+</div>
+<%- include('partials/footer') %>
