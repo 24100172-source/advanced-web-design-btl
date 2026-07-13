@@ -174,15 +174,15 @@ INSERT INTO products (category_id, name, price, image_url, is_bestseller, status
 
 -- Nhóm 13: ĐỒ UỐNG
 INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
-(13, 'Trà Gạo Rang Hàn Quốc (Đá/Nóng)', 25000, NULL, 0, 1),
-(13, 'Nước Ép Thơm Nguyên Chất', 45000, NULL, 0, 1),
-(13, 'Coca Cola / Pepsi Lon', 20000, NULL, 0, 1);
+(13, 'Trà Gạo Rang Hàn Quốc (Đá/Nóng)', 25000, 'images/tra-gao.jpg', 0, 1),
+(13, 'Nước Ép Thơm Nguyên Chất', 45000, 'images/nuoc-ep.jpg', 0, 1),
+(13, 'Coca Cola / Pepsi Lon', 20000, 'images/coca-pepsi.jpg', 0, 1);
 
 -- Nhóm 14: BIA/RƯỢU HÀN QUỐC
 INSERT INTO products (category_id, name, price, image_url, is_bestseller, status) VALUES 
-(14, 'Rượu Soju Chamisul Truyền Thống', 69000, NULL, 0, 1),
-(14, 'Rượu Soju Vị Dâu / Bưởi / Nho', 69000, NULL, 0, 1),
-(14, 'Rượu Gạo Makgeolli Truyền Thống', 95000, NULL, 0, 1);
+(14, 'Rượu Soju Chamisul Truyền Thống', 69000, 'images/ruou.jpg', 0, 1),
+(14, 'Rượu Soju Vị Dâu / Bưởi / Nho', 69000, 'images/ruou-cac-vi.jpg', 0, 1),
+(14, 'Rượu Gạo Makgeolli Truyền Thống', 95000, 'images/ruou-gao.jpg', 0, 1);
 
 INSERT INTO bookings (fullname, phone, email, booking_date, booking_time, guests_count, status, note, created_at) VALUES
 ('Nguyễn Minh Đức', '0988655622', 'duc.nguyen@gmail.com', '2026-06-25', '19:00:00', 6, 'confirmed', 'Bàn gần cửa sổ, ăn buffet nướng', '2026-06-20 10:15:30'),
