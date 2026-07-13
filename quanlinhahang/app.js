@@ -135,7 +135,7 @@ app.post('/lien-he', async (req, res) => {
 // ==========================================
 
 app.get('/auth/login', (req, res) => {
-    res.render('auth/login'); 
+    res.render('auth/login', { hideSearch: true }); 
 });
 
 app.post('/auth/login', (req, res) => {
@@ -145,7 +145,7 @@ app.post('/auth/login', (req, res) => {
 });
 
 app.get('/auth/register', (req, res) => {
-    res.render('auth/register'); 
+    res.render('auth/register', { hideSearch: true }); 
 });
 
 app.post('/auth/register', (req, res) => {
@@ -156,6 +156,136 @@ app.post('/auth/register', (req, res) => {
     console.log('--- CÓ KHÁCH ĐĂNG KÝ MỚI ---');
     res.send('<h2>Đăng ký thành công! Hãy đăng nhập. (Demo)</h2><a href="/auth/login">Tới trang Đăng nhập</a>');
 });
+
+
+// ==========================================
+//  CẤU HÌNH SESSION & MIDDLEWARE GIỎ HÀNG
+// ==========================================
+
+// 1. Khởi tạo cấu hình Session
+app.use(session({
+    secret: 'grill_house_premium_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 24 * 60 * 60 * 1000 } // Hết hạn sau 1 ngày
+}));
+
+// 2. Middleware tính số lượng món cho Navbar toàn cục (Chạy trước mọi Route)
+app.use((req, res, next) => {
+    let totalItems = 0;
+    if (req.session && req.session.cart) {
+        totalItems = req.session.cart.reduce((sum, item) => sum + item.quantity, 0);
+    }
+    res.locals.globalCartCount = totalItems; // Tạo biến dùng trực tiếp trong mọi file EJS
+    next();
+});
+
+// Hàm trợ giúp tính tổng tiền
+function calculateCartTotal(cart) {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+}
+
+// ==========================================
+// CÁC ROUTE XỬ LÝ GIỎ HÀNG
+// ==========================================
+
+// [GET] Trang giao diện chi tiết giỏ hàng
+app.get('/gio-hang', (req, res) => {
+    if (!req.session.cart) req.session.cart = [];
+    
+    res.render('giohang', { 
+        title: 'Giỏ hàng của bạn',
+        cartItems: req.session.cart, 
+        totalAmount: calculateCartTotal(req.session.cart),
+        hideSearch: true //báo ẩn tìm kiếm 
+    });
+});
+
+// [POST] Thêm món ăn vào giỏ hàng (Gọi qua Fetch API từ Thực đơn)
+app.post('/cart/add', async (req, res) => {
+    try {
+        const { productId } = req.body;
+        if (!req.session.cart) req.session.cart = [];
+
+        let item = req.session.cart.find(i => i.id == productId);
+
+        if (item) {
+            item.quantity += 1;
+        } else {
+            // Lấy thông tin từ database bằng id sản phẩm
+            const [products] = await db.query("SELECT * FROM products WHERE id = ?", [productId]);
+            
+            if (products.length > 0) {
+                const product = products[0];
+                req.session.cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image_url || product.image || 'images/default-food.jpg',
+                    quantity: 1
+                });
+            } else {
+                return res.status(404).json({ success: false, message: "Không tìm thấy món ăn" });
+            }
+        }
+
+        const cartCount = req.session.cart.reduce((sum, i) => sum + i.quantity, 0);
+        res.json({ success: true, cartCount: cartCount });
+
+    } catch (error) {
+        console.error("Lỗi thêm món vào giỏ:", error);
+        res.status(500).json({ success: false, message: "Lỗi hệ thống" });
+    }
+});
+
+// [POST] Cập nhật số lượng (+/-) trực tiếp tại trang giỏ hàng
+app.post('/cart/update', (req, res) => {
+    const { productId, change } = req.body;
+    let cart = req.session.cart || [];
+
+    let item = cart.find(i => i.id == productId);
+
+    if (item) {
+        item.quantity += parseInt(change);
+
+        if (item.quantity <= 0) {
+            cart = cart.filter(i => i.id != productId);
+            req.session.cart = cart;
+            return res.json({ 
+                success: true, 
+                newQuantity: 0, 
+                newCartTotal: calculateCartTotal(cart),
+                cartCount: cart.reduce((sum, i) => sum + i.quantity, 0)
+            });
+        }
+
+        req.session.cart = cart;
+        return res.json({
+            success: true,
+            newQuantity: item.quantity,
+            newItemTotal: item.price * item.quantity,
+            newCartTotal: calculateCartTotal(cart),
+            cartCount: cart.reduce((sum, i) => sum + i.quantity, 0)
+        });
+    }
+    res.status(404).json({ success: false, message: "Không tìm thấy món ăn" });
+});
+
+// [POST] Xóa hẳn một món ăn khỏi giỏ hàng
+app.post('/cart/remove', (req, res) => {
+    const { productId } = req.body;
+    let cart = req.session.cart || [];
+
+    cart = cart.filter(i => i.id != productId);
+    req.session.cart = cart;
+
+    res.json({
+        success: true,
+        newCartTotal: calculateCartTotal(cart),
+        cartCount: cart.reduce((sum, i) => sum + i.quantity, 0)
+    });
+});
+
 
 // Khởi chạy ứng dụng
 app.listen(PORT, () => {
