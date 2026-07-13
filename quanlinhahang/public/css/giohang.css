@@ -1,0 +1,94 @@
+/* ==========================================================================
+   CẤU HÌNH PHONG CÁCH CHUNG & GIỎ HÀNG (GRILL HOUSE)
+   ========================================================================== */
+
+/* Thiết lập font chữ nền tảng cho toàn bộ hệ thống */
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+/* Định dạng font chữ Serif sang trọng cho các tiêu đề lớn */
+.font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+}
+
+/* Ép ảnh món ăn không bị móp méo khi thu hẹp kích thước */
+.object-cover {
+    object-fit: cover;
+}
+
+/* Hiệu ứng zoom nhẹ khi rê chuột vào các nút hành động/nút thanh toán */
+.hover-scale {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.hover-scale:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(255, 74, 90, 0.2);
+    opacity: 0.95;
+}
+
+/* Tùy chỉnh bộ nút bấm Tăng / Giảm số lượng */
+.input-group .btn-outline-secondary {
+    border-color: #dee2e6;
+    color: #495057;
+    transition: all 0.2s ease;
+}
+
+.input-group .btn-outline-secondary:hover {
+    background-color: #ff4a5a; /* Đổi sang màu đỏ thương hiệu khi hover */
+    color: #ffffff;
+    border-color: #ff4a5a;
+}
+
+/* Ô hiển thị số lượng ở giữa */
+.quantity-val {
+    min-width: 40px;
+    text-align: center;
+    border-left: none !important;
+    border-right: none !important;
+    user-select: none; /* Ngăn bôi đen số khi bấm nhanh */
+}
+
+/* Định dạng lại đường gạch mờ của bảng giỏ hàng cho tinh tế */
+.table th {
+    letter-spacing: 0.05em;
+    font-weight: 700;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Hiệu ứng highlight nhẹ dòng sản phẩm khi rê chuột vào bảng */
+.table tbody tr:hover {
+    background-color: #fdfdfd;
+}
+
+/* Định dạng lại nút xóa (Thùng rác) */
+.btn-link.text-danger {
+    transition: transform 0.2s ease;
+}
+.btn-link.text-danger:hover {
+    transform: scale(1.15);
+}
+
+/* Định dạng Badge số lượng trên Icon Giỏ hàng ở Navbar */
+#cart-badge {
+    padding: 0.35em 0.55em;
+    font-weight: 700;
+    line-height: 1;
+    transform: translate(20%, -30%) !important; /* Căn chỉnh lại vị trí bóng đỏ */
+}
+
+/* Tùy chỉnh màu sắc thương hiệu Grill House nếu bạn muốn chèn thêm */
+.text-danger, .btn-danger {
+    background-color: #ff4a5a !important;
+    border-color: #ff4a5a !important;
+}
+.btn-danger:hover {
+    background-color: #e03e4d !important;
+    border-color: #e03e4d !important;
+}
