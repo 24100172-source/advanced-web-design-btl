@@ -9,8 +9,9 @@
       <a href="/auth/login" class="text-dark text-decoration-none me-3">Đăng nhập</a>
       <a href="/gio-hang" class="text-dark position-relative text-decoration-none">
         <i class="bi bi-bag fs-5" aria-hidden="true"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
-          0
+        <!-- Thay số 0 bằng biến số lượng từ Session Server -->
+        <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+          <%= locals.globalCartCount || 0 %>
         </span>
       </a>
     </div>
@@ -50,6 +51,8 @@
   </div>
 </nav>
 
+<!-- Bọc thanh tìm kiếm vào điều kiện ẩn khi ở trang giỏ hàng -->
+<% if (!locals.hideSearch) { %>
 <div class="container my-4">
   <div class="row justify-content-center">
     <div class="col-md-6 d-flex align-items-center gap-2">
@@ -65,3 +68,8 @@
     </div>
   </div>
 </div>
+<% } %>
+
+<script>
+  // Số lượng giỏ hàng hiện tại đã được Server tự động render chính xác qua biến globalCartCount
+</script>
