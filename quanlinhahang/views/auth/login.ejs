@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container my-5 py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="p-4 p-md-5 rounded-4 shadow-lg" style="background-color: #1a1614; border: 1px solid #362e29;">
+        
+        <div class="text-center mb-4">
+          <img src="/images/logo.png" alt="Logo" class="mb-3" style="height: 60px; border-radius: 50%; border: 2px solid #ff4a5a;">
+          <h3 class="fw-bold text-white font-serif">Đăng Nhập</h3>
+          <p class="text-white-50 small">Chào mừng bạn quay lại với Grill House</p>
+        </div>
+
+        <form action="/auth/login" method="POST" id="booking-form">
+          <div class="mb-3">
+            <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Số điện thoại / Email</label>
+            <input type="text" name="username" class="form-control py-2 px-3" style="background-color: #241f1c; color: white; border-color: #362e29;" required placeholder="Nhập tài khoản của bạn">
+          </div>
+          
+          <div class="mb-4">
+            <div class="d-flex justify-content-between">
+              <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Mật khẩu</label>
+              <a href="/auth/forgot" class="small text-warning text-decoration-none">Quên mật khẩu?</a>
+            </div>
+            <input type="password" name="password" class="form-control py-2 px-3" style="background-color: #241f1c; color: white; border-color: #362e29;" required placeholder="••••••••">
+          </div>
+
+          <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill py-2 text-dark text-uppercase shadow-sm mb-3" style="transition: 0.3s;">
+            Đăng Nhập
+          </button>
+        </form>
+
+        <div class="text-center mt-4 border-top border-secondary pt-3">
+          <p class="text-white-50 small mb-0">Chưa có tài khoản? <a href="/auth/register" class="text-warning fw-bold text-decoration-none">Đăng ký ngay</a></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
