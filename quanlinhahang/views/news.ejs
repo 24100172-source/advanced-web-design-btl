@@ -44,7 +44,7 @@
                     <i class="bi bi-calendar3 me-2 text-warning"></i>
                     <%= article.created_at ? new Date(article.created_at).toLocaleDateString('vi-VN') : '28/06/2026' %>
                   </span>
-                  <a href="#" class="text-warning text-decoration-none fw-bold small hover-white d-flex align-items-center">
+                  <a href="/tin-tuc/<%= article.id %>" class="text-warning text-decoration-none fw-bold small hover-white d-flex align-items-center">
                     Đọc tiếp <i class="bi bi-arrow-right ms-1"></i>
                   </a>
                 </div>

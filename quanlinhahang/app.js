@@ -13,6 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// 1. TRANG CHỦ
 app.get('/', async (req, res) => {
     try {
         const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
@@ -28,6 +29,7 @@ app.get('/', async (req, res) => {
     }
 });
 
+// 2. TRANG THỰC ĐƠN
 app.get('/thuc-don', async (req, res) => {
     try {
         const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
@@ -54,18 +56,35 @@ app.get('/thuc-don', async (req, res) => {
     }
 });
 
+// 3. TRANG DANH SÁCH TIN TỨC (ĐÃ KHÔI PHỤC LẠI Ở ĐÂY!)
 app.get('/tin-tuc', async (req, res) => {
     try {
         const [rows] = await db.query("SELECT * FROM articles ORDER BY created_at DESC");
-
         res.render('news', { articles: rows }); 
-        
     } catch (error) {
         console.error("Lỗi lấy dữ liệu tin tức: ", error);
         res.status(500).send("Lỗi Server: Không thể tải dữ liệu tin tức!");
     }
 });
 
+// 4. TRANG CHI TIẾT TIN TỨC (CHẠY SONG SONG MƯỢT MÀ)
+app.get('/tin-tuc/:id', async (req, res) => {
+    try {
+        const articleId = req.params.id;
+        const [rows] = await db.query("SELECT * FROM articles WHERE id = ?", [articleId]);
+
+        if (rows.length === 0) {
+            return res.status(404).send("Không tìm thấy bài viết!");
+        }
+
+        res.render('news-detail', { post: rows[0] });
+    } catch (error) {
+        console.error("Lỗi lấy chi tiết tin tức: ", error);
+        res.status(500).send("Lỗi Server: Không thể tải chi tiết tin tức!");
+    }
+});
+
+// 5. CÁC TRANG CHÍNH SÁCH VÀ THÔNG TIN KHÁC
 app.get('/dieu-khoan', (req, res) => {
     res.render('dieu-khoan');
 });
@@ -90,6 +109,7 @@ app.get('/gioi-thieu', (req, res) => {
     res.render('gthieu');
 });
 
+// 6. XỬ LÝ POST FORM
 app.post('/dat-ban', async (req, res) => {
     try {
         const { name, phone, date, time, guests, notes } = req.body;
