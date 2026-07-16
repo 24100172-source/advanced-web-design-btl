@@ -143,43 +143,42 @@
     </div>
   </section>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-
-  addToCartButtons.forEach(button => {
-    button.addEventListener('click', async function(e) {
-      e.preventDefault();
-      
-      const productId = this.getAttribute('data-id');
-      const productName = this.getAttribute('data-name');
-
-      try {
-        const response = await fetch('/cart/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ productId })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          const badge = document.getElementById('cart-badge');
-          if (badge) badge.innerText = data.cartCount;
-          
-          alert(`Đã thêm món "${productName}" vào giỏ hàng thành công!`);
-        } else {
-          alert('Không thể thêm món ăn: ' + data.message);
-        }
-      } catch (error) {
-        console.error('Lỗi kết nối hệ thống giỏ hàng:', error);
-      }
-    });
-  });
-});
-</script>
-
-
 </main>
 
 <%- include('partials/footer') %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        const productId = this.getAttribute('data-id');
+        const productName = this.getAttribute('data-name');
+
+        try {
+          const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            const badge = document.getElementById('cart-badge');
+            if (badge) badge.innerText = data.cartCount;
+            
+            alert(`Đã thêm món "${productName}" vào giỏ hàng thành công!`);
+          } else {
+            alert('Không thể thêm món ăn: ' + data.message);
+          }
+        } catch (error) {
+          console.error('Lỗi kết nối hệ thống giỏ hàng:', error);
+        }
+      });
+    });
+  });
+</script>
