@@ -83,14 +83,15 @@
                       <%= product.price.toLocaleString('vi-VN') %>đ
                     </span>
                     
-                    <button class="add-btn shadow border-0 add-to-cart-btn" 
-                            data-id="<%= product._id || product.id %>"
-                            data-name="<%= product.name %>"
-                            data-price="<%= product.price %>"
-                            data-image="<%= product.image_url %>"
-                            title="Thêm vào giỏ hàng">
-                      <i class="bi bi-plus-lg text-white" aria-hidden="true"></i>
-                    </button>
+                    <button class="add-btn shadow border-0 add-to-cart-btn"
+                    data-id="<%= product._id || product.id %>"
+                    data-name="<%= product.name %>"
+                    data-price="<%= product.price %>"
+                    data-image="<%= product.image_url %>"
+                    title="Thêm vào giỏ hàng"
+                    onclick="addToCart('<%= product._id || product.id %>')">
+                  <i class="bi bi-plus-lg text-white" aria-hidden="true"></i>
+                </button>
                   </div>
                   
                 </div>
@@ -145,4 +146,58 @@
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+async function addToCart(productId) {
+    try {
+        const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId: productId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: '#181310',
+                color: '#fff',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Đã thêm món ăn vào giỏ hàng!'
+            });
+
+            const cartBadge = document.getElementById('cart-badge') || document.querySelector('.badge');
+            if (cartBadge) {
+                cartBadge.innerText = data.cartCount;
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Thất bại',
+                text: data.message || 'Không thể thêm món ăn vào giỏ hàng.',
+                background: '#181310',
+                color: '#fff',
+                confirmButtonColor: '#ffc107'
+            });
+        }
+    } catch (error) {
+        console.error('Lỗi thêm giỏ hàng:', error);
+    }
+}
+</script>
 <%- include('partials/footer') %>

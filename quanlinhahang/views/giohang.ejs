@@ -55,8 +55,7 @@
 
   <div class="d-flex justify-content-between align-items-center mt-4 p-4 bg-dark rounded-4 border border-secondary">
     <h4 class="text-white mb-0">Tổng cộng: <span id="cart-total" class="text-warning"><%= locals.totalAmount ? totalAmount.toLocaleString('vi-VN') : 0 %></span>đ</h4>
-    <button class="btn btn-warning px-4 py-2 fw-bold rounded-pill hover-scale" onclick="checkout()">Tiến hành thanh toán</button>
-  </div>
+    <a href="/thanh-toan" class="btn btn-warning px-4 py-2 fw-bold rounded-pill hover-scale text-decoration-none text-dark">Tiến hành thanh toán</a>  </div>
 </main>
 
 <%- include('partials/footer') %>

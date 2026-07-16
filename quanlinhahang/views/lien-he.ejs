@@ -100,4 +100,80 @@
   </div>
 </main>
 
+<!-- ================= CONG DONG ĐÁNH GIÁ & PHẢN HỒI ================= -->
+<section class="container my-5 py-4">
+    <div class="text-center mb-5">
+        <h6 class="text-warning text-uppercase mb-2 tracking-wider fw-bold" style="letter-spacing: 2px;">Khách Hàng Nói Gì</h6>
+        <!-- SỬA LỖI: Đổi text-white thành text-dark (màu tối) để hiện rõ trên nền sáng -->
+        <h2 class="fw-bold text-dark font-serif fs-2">Ý Kiến & Đánh Giá Gần Đây</h2>
+        <div class="mx-auto mt-3 bg-warning" style="height: 3px; width: 60px;"></div>
+    </div>
+
+    <div class="row g-4">
+        <% if (typeof reviews !== 'undefined' && reviews.length > 0) { %>
+            <% reviews.forEach(review => { %>
+                <div class="col-md-6 col-lg-4">
+                    <!-- SỬA LỖI: Card dùng nền tối nhẹ #181310 rất sang, nổi bật hẳn trên nền sáng của trang -->
+                    <div class="card h-100 p-4 border-0 rounded-4 transition-all" 
+                         style="background: #181310; border: 1px solid #362e29 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                        
+                        <!-- Header Card: Icon & Tên khách hàng -->
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center fw-bold fs-5" 
+                                 style="width: 45px; height: 45px;">
+                                <%= review.fullname.charAt(0).toUpperCase() %>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="text-white mb-0 fw-bold"><%= review.fullname %></h6>
+                                <span class="text-warning small">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Tiêu đề phản hồi (nếu có) -->
+                        <% if (review.subject) { %>
+                            <h6 class="text-warning font-serif mb-2" style="font-style: italic;">
+                                "<%= review.subject %>"
+                            </h6>
+                        <% } %>
+
+                        <!-- Nội dung phản hồi -->
+                        <p class="text-white-50 small mb-0 flex-grow-1" style="line-height: 1.6; white-space: pre-wrap;">
+                            <%= review.message %>
+                        </p>
+
+                        <!-- Ngày gửi -->
+                        <div class="mt-3 pt-2 border-top border-secondary text-white-50 small text-end" style="border-color: #362e29 !important; font-size: 0.75rem;">
+                            <i class="bi bi-calendar3 me-1"></i>
+                            <%= review.created_at ? new Date(review.created_at).toLocaleDateString('vi-VN') : 'Vừa xong' %>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="col-12 text-center py-5">
+                <!-- SỬA LỖI: Đổi text-white-50 thành text-muted (màu tối nhẹ) để nhìn thấy chữ trên nền sáng -->
+                <p class="text-muted fs-5 font-serif mb-0">Hãy là người đầu tiên gửi những đánh giá yêu thương đến Grill House!</p>
+            </div>
+        <% } %>
+    </div>
+</section>
+
+<style>
+    /* Hiệu ứng di chuột cho thẻ đánh giá */
+    .transition-all {
+        transition: all 0.3s ease-in-out;
+    }
+    .transition-all:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(255, 193, 7, 0.2) !important;
+        border-color: #ffc107 !important;
+    }
+</style>
+
 <%- include('partials/footer') %>

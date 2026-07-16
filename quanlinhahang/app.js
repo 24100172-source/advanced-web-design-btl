@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const session = require('express-session'); // <-- SỬA LỖI 1: Đã khai báo thư viện Session ở đây!
+const session = require('express-session'); 
 const db = require('./config/db');
 
 const app = express();
@@ -14,38 +14,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// ==========================================
-// CẤU HÌNH SESSION & MIDDLEWARE GIỎ HÀNG (Đưa lên trước các Route)
-// ==========================================
 
-// Khởi tạo cấu hình Session
 app.use(session({
     secret: 'grill_house_premium_secret_key',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 } // Hết hạn sau 1 ngày
+    cookie: { maxAge: 24 * 60 * 60 * 1000 } 
 }));
 
-// Middleware tính số lượng món cho Navbar toàn cục (Chạy trước mọi Route)
 app.use((req, res, next) => {
     let totalItems = 0;
     if (req.session && req.session.cart) {
         totalItems = req.session.cart.reduce((sum, item) => sum + item.quantity, 0);
     }
-    res.locals.globalCartCount = totalItems; // Tạo biến dùng trực tiếp trong mọi file EJS
+    res.locals.globalCartCount = totalItems; 
     next();
 });
 
-// Hàm trợ giúp tính tổng tiền
 function calculateCartTotal(cart) {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 }
 
-// ==========================================
-// CÁC ROUTE CHÍNH
-// ==========================================
 
-// 1. TRANG CHỦ
+
 app.get('/', async (req, res) => {
     try {
         const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
@@ -61,7 +52,6 @@ app.get('/', async (req, res) => {
     }
 });
 
-// 2. TRANG THỰC ĐƠN
 app.get('/thuc-don', async (req, res) => {
     try {
         const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
@@ -88,7 +78,6 @@ app.get('/thuc-don', async (req, res) => {
     }
 });
 
-// 3. TRANG DANH SÁCH TIN TỨC (Đã dọn dẹp phần trùng lặp)
 app.get('/tin-tuc', async (req, res) => {
     try {
         const [rows] = await db.query("SELECT * FROM articles ORDER BY created_at DESC");
@@ -99,7 +88,6 @@ app.get('/tin-tuc', async (req, res) => {
     }
 });
 
-// 4. TRANG CHI TIẾT TIN TỨC
 app.get('/tin-tuc/:id', async (req, res) => {
     try {
         const articleId = req.params.id;
@@ -116,7 +104,6 @@ app.get('/tin-tuc/:id', async (req, res) => {
     }
 });
 
-// 5. CÁC TRANG CHÍNH SÁCH VÀ THÔNG TIN KHÁC
 app.get('/dieu-khoan', (req, res) => {
     res.render('dieu-khoan');
 });
@@ -133,7 +120,6 @@ app.get('/gioi-thieu', (req, res) => {
     res.render('gthieu');
 });
 
-// 6. XỬ LÝ ĐẶT BÀN (Đã dọn dẹp phần trùng lặp)
 app.get('/dat-ban', (req, res) => {
     res.render('dat-ban');
 });
@@ -160,9 +146,15 @@ app.post('/dat-ban', async (req, res) => {
     }
 });
 
-// 7. XỬ LÝ LIÊN HỆ
-app.get('/lien-he', (req, res) => {
-    res.render('lien-he'); 
+app.get('/lien-he', async (req, res) => {
+    try {
+        const [reviews] = await db.query("SELECT * FROM contacts ORDER BY created_at DESC LIMIT 6");
+        
+        res.render('lien-he', { reviews: reviews }); 
+    } catch (error) {
+        console.error("Lỗi lấy danh sách đánh giá: ", error);
+        res.render('lien-he', { reviews: [] }); 
+    }
 });
 
 app.post('/lien-he', async (req, res) => {
@@ -171,13 +163,50 @@ app.post('/lien-he', async (req, res) => {
         console.log('----- CÓ TIN NHẮN LIÊN HỆ -----');
         console.log(`Từ: ${name} (${phone}) | Tiêu đề: ${subject || 'Không có'} | Nội dung: ${message}`);
 
-        res.send(`<script>alert('Gửi tin nhắn thành công!'); window.location.href='/lien-he';</script>`);
+        res.send(`
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <style>
+                body { background-color: #111; }
+            </style>
+            <script>
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Đã gửi tin nhắn!',
+                        text: 'Cảm ơn bạn, Grill House sẽ phản hồi sớm nhất!',
+                        background: '#181310',
+                        color: '#fff',
+                        confirmButtonColor: '#ffc107'
+                    }).then(() => {
+                        window.location.href = '/lien-he';
+                    });
+                };
+            </script>
+        `);
     } catch (error) {
-        res.send(`<script>alert('Gửi tin nhắn thất bại!'); window.location.href='/lien-he';</script>`);
+        res.send(`
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <style>
+                body { background-color: #111; }
+            </style>
+            <script>
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi gửi tin',
+                        text: 'Có lỗi xảy ra, vui lòng thử lại sau!',
+                        background: '#181310',
+                        color: '#fff',
+                        confirmButtonColor: '#ffc107'
+                    }).then(() => {
+                        window.location.href = '/lien-he';
+                    });
+                };
+            </script>
+        `);
     }
 });
 
-// 8. ĐĂNG NHẬP / ĐĂNG KÝ (AUTH)
 app.get('/auth/login', (req, res) => {
     res.render('auth/login', { hideSearch: true }); 
 });
@@ -201,11 +230,8 @@ app.post('/auth/register', (req, res) => {
     res.send('<h2>Đăng ký thành công! Hãy đăng nhập. (Demo)</h2><a href="/auth/login">Tới trang Đăng nhập</a>');
 });
 
-// ==========================================
-// CÁC ROUTE XỬ LÝ GIỎ HÀNG
-// ==========================================
 
-// [GET] Trang giao diện chi tiết giỏ hàng
+
 app.get('/gio-hang', (req, res) => {
     if (!req.session.cart) req.session.cart = [];
     
@@ -213,11 +239,10 @@ app.get('/gio-hang', (req, res) => {
         title: 'Giỏ hàng của bạn',
         cartItems: req.session.cart, 
         totalAmount: calculateCartTotal(req.session.cart),
-        hideSearch: true //báo ẩn tìm kiếm 
+        hideSearch: true
     });
 });
 
-// [POST] Thêm món ăn vào giỏ hàng
 app.post('/cart/add', async (req, res) => {
     try {
         const { productId } = req.body;
@@ -253,7 +278,6 @@ app.post('/cart/add', async (req, res) => {
     }
 });
 
-// [POST] Cập nhật số lượng (+/-) trực tiếp tại trang giỏ hàng
 app.post('/cart/update', (req, res) => {
     const { productId, change } = req.body;
     let cart = req.session.cart || [];
@@ -286,7 +310,6 @@ app.post('/cart/update', (req, res) => {
     res.status(404).json({ success: false, message: "Không tìm thấy món ăn" });
 });
 
-// [POST] Xóa hẳn một món ăn khỏi giỏ hàng
 app.post('/cart/remove', (req, res) => {
     const { productId } = req.body;
     let cart = req.session.cart || [];
@@ -301,7 +324,54 @@ app.post('/cart/remove', (req, res) => {
     });
 });
 
-// Khởi chạy ứng dụng
+
+app.get('/thanh-toan', (req, res) => {
+    const cart = req.session.cart || [];
+    if (cart.length === 0) {
+        return res.redirect('/thuc-don');
+    }
+    
+    res.render('checkout', {
+        cartItems: cart,
+        totalAmount: calculateCartTotal(cart),
+        hideSearch: true
+    });
+});
+
+app.post('/thanh-toan', async (req, res) => {
+    try {
+        const { fullname, phone, address, payment_method, note } = req.body;
+        const cart = req.session.cart || [];
+
+        if (cart.length === 0) {
+            return res.status(400).json({ success: false, message: "Giỏ hàng trống rỗng!" });
+        }
+
+        const totalAmount = calculateCartTotal(cart);
+
+        const [orderResult] = await db.query(
+            "INSERT INTO orders (fullname, phone, address, payment_method, total_amount, note) VALUES (?, ?, ?, ?, ?, ?)",
+            [fullname, phone, address, payment_method, totalAmount, note || null]
+        );
+
+        const orderId = orderResult.insertId;
+
+        for (const item of cart) {
+            await db.query(
+                "INSERT INTO order_details (order_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)",
+                [orderId, item.id, item.name, item.price, item.quantity]
+            );
+        }
+
+        req.session.cart = [];
+
+        res.json({ success: true, message: "Đặt hàng thành công!" });
+    } catch (error) {
+        console.error("Lỗi khi xử lý đặt đơn hàng: ", error);
+        res.status(500).json({ success: false, message: "Lỗi hệ thống, không thể đặt hàng." });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server đang chạy tại: http://localhost:${PORT}`);
 });

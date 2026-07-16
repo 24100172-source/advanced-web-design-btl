@@ -1,0 +1,237 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<main class="container my-5 py-5" style="min-height: 80vh;">
+    <div class="text-center mb-5">
+        <h6 class="text-warning text-uppercase mb-2 tracking-wider fw-bold" style="letter-spacing: 3px; font-size: 0.8rem;">Grill House Checkout</h6>
+        <h2 class="fw-bold text-white font-serif fs-1">Xác Nhận Thanh Toán</h2>
+        <div class="mx-auto mt-3 bg-warning" style="height: 3px; width: 80px;"></div>
+    </div>
+
+    <div class="row g-5 justify-content-center">
+        
+        <div class="col-lg-7">
+            <div class="card border-0 rounded-4 p-4 p-md-5" style="background: #181310; border: 1px solid #362e29 !important; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <h4 class="text-warning font-serif mb-4 fw-bold pb-2 border-bottom" style="border-color: #362e29 !important;">
+                    <i class="bi bi-person-lines-fill me-2"></i>Thông Tin Giao Hàng
+                </h4>
+                
+                <form id="checkoutForm">
+                    <div class="mb-4">
+                        <label class="form-label text-white-50 small fw-bold" style="letter-spacing: 0.5px;">HỌ VÀ TÊN KHÁCH HÀNG *</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-warning"><i class="bi bi-person"></i></span>
+                            <input type="text" name="fullname" class="form-control bg-dark border-secondary text-white py-2.5 custom-input" required placeholder="Nhập họ và tên của bạn...">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white-50 small fw-bold" style="letter-spacing: 0.5px;">SỐ ĐIỆN THOẠI *</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-warning"><i class="bi bi-telephone"></i></span>
+                            <input type="tel" name="phone" class="form-control bg-dark border-secondary text-white py-2.5 custom-input" required placeholder="Nhập số điện thoại nhận hàng...">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white-50 small fw-bold" style="letter-spacing: 0.5px;">ĐỊA CHỈ GIAO HÀNG *</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-warning"><i class="bi bi-geo-alt"></i></span>
+                            <input type="text" name="address" class="form-control bg-dark border-secondary text-white py-2.5 custom-input" required placeholder="Số nhà, tên đường, phường, quận...">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white-50 small fw-bold" style="letter-spacing: 0.5px;">PHƯƠNG THỨC THANH TOÁN *</label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="payment-card-option w-100 p-3 rounded-3 text-center border d-block position-relative" for="payCod">
+                                    <input class="form-check-input position-absolute top-0 start-0 m-2" type="radio" name="payment_method" id="payCod" value="cod" checked>
+                                    <i class="bi bi-cash-coin fs-2 text-warning d-block mb-2"></i>
+                                    <span class="text-white d-block small fw-bold">Tiền mặt (COD)</span>
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="payment-card-option w-100 p-3 rounded-3 text-center border d-block position-relative" for="payQr">
+                                    <input class="form-check-input position-absolute top-0 start-0 m-2" type="radio" name="payment_method" id="payQr" value="qr">
+                                    <i class="bi bi-qr-code-scan fs-2 text-warning d-block mb-2"></i>
+                                    <span class="text-white d-block small fw-bold">Chuyển khoản QR</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white-50 small fw-bold" style="letter-spacing: 0.5px;">GHI CHÚ ĐƠN HÀNG</label>
+                        <textarea name="note" rows="3" class="form-control bg-dark border-secondary text-white custom-input" placeholder="Ghi chú về thời gian giao hàng, gia vị..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning w-100 py-3 rounded-pill fw-bold text-uppercase text-dark tracking-wider transition-all mt-2" style="font-size: 0.95rem; letter-spacing: 1.5px;">
+                        <i class="bi bi-bag-check-fill me-2"></i> Xác Nhận Đặt Hàng
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 rounded-4 p-4 sticky-top" style="background: #181310; border: 1px solid #362e29 !important; top: 100px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <h4 class="text-warning font-serif mb-4 fw-bold pb-2 border-bottom" style="border-color: #362e29 !important;">
+                    <i class="bi bi-receipt me-2"></i>Đơn Hàng Của Bạn
+                </h4>
+                
+                <div class="cart-items-summary mb-4" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                    <% if (locals.cartItems && cartItems.length > 0) { %>
+                        <% cartItems.forEach(item => { %>
+                            <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom border-secondary" style="border-color: #2b2420 !important;">
+                                <div class="d-flex align-items-center">
+                                    <img src="/<%= item.image %>" class="rounded object-fit-cover border border-secondary" style="width: 55px; height: 55px;" alt="<%= item.name %>" onerror="this.src='/images/default-food.jpg'">
+                                    <div class="ms-3">
+                                        <h6 class="mb-0 fw-bold text-white" style="font-size: 0.95rem;"><%= item.name %></h6>
+                                        <span class="text-white-50 small">Số lượng: <%= item.quantity %></span>
+                                    </div>
+                                </div>
+                                <span class="fw-bold text-warning" style="font-size: 0.95rem;">
+                                    <%= (item.price * item.quantity).toLocaleString('vi-VN') %>đ
+                                </span>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+
+                <div class="price-totals bg-dark p-3 rounded-3 mb-4" style="border: 1px solid #2b2420;">
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-white-50">Tạm tính:</span>
+                        <span class="text-white fw-bold"><%= totalAmount.toLocaleString('vi-VN') %>đ</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-white-50">Phí vận chuyển:</span>
+                        <span class="text-success fw-bold">Miễn phí</span>
+                    </div>
+                    <hr style="border-color: #362e29 !important; margin: 10px 0;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-white fs-5">TỔNG CỘNG:</span>
+                        <span class="fw-bold fs-4 text-warning"><%= totalAmount.toLocaleString('vi-VN') %>đ</span>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <a href="/gio-hang" class="text-white-50 text-decoration-none fw-bold small hover-warning d-inline-flex align-items-center transition-all">
+                        <i class="bi bi-arrow-left me-2"></i> Quay lại giỏ hàng chỉnh sửa
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<%- include('partials/footer') %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = {
+        fullname: this.fullname.value,
+        phone: this.phone.value,
+        address: this.address.value,
+        payment_method: this.payment_method.value,
+        note: this.note.value
+    };
+
+    Swal.fire({
+        title: 'Đang xử lý đơn hàng...',
+        allowOutsideClick: false,
+        background: '#181310',
+        color: '#fff',
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    try {
+        const response = await fetch('/thanh-toan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Đặt Hàng Thành Công!',
+                text: 'Cảm ơn bạn đã lựa chọn Grill House. Nhân viên sẽ liên hệ sớm nhất!',
+                background: '#181310',
+                color: '#fff',
+                confirmButtonColor: '#ffc107'
+            }).then(() => {
+                window.location.href = '/'; 
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: result.message,
+                background: '#181310',
+                color: '#fff',
+                confirmButtonColor: '#ffc107'
+            });
+        }
+    } catch (error) {
+        console.error("Lỗi:", error);
+    }
+});
+</script>
+
+<style>
+    .font-serif {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-style: italic;
+    }
+    
+    .custom-input:focus {
+        background-color: #212529 !important;
+        border-color: #ffc107 !important;
+        box-shadow: 0 0 8px rgba(255, 193, 7, 0.4) !important;
+        color: #fff !important;
+    }
+    
+    .payment-card-option {
+        background: #212529;
+        border-color: #362e29;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .payment-card-option:hover {
+        border-color: #ffc107;
+        background: rgba(255, 193, 7, 0.05);
+    }
+    .form-check-input:checked + .bi + span {
+        color: #ffc107 !important;
+    }
+    .form-check-input:checked {
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+
+    .btn-warning:hover {
+        background-color: #e0a800 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+    }
+
+    .hover-warning:hover {
+        color: #ffc107 !important;
+    }
+
+    .cart-items-summary::-webkit-scrollbar {
+        width: 5px;
+    }
+    .cart-items-summary::-webkit-scrollbar-thumb {
+        background: #362e29;
+        border-radius: 10px;
+    }
+</style>
