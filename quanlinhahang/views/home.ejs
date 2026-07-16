@@ -117,7 +117,7 @@
           <div class="list-group sidebar-menu-list custom-scrollbar border-0 gap-2">
             <% if(categories && categories.length > 0) { %>
               <% categories.forEach((category) => { %>
-                <a href="/danh-muc/<%= category.slug %>" class="list-group-item list-group-item-action border-0 rounded-3 px-3 py-2 dark-menu-item" style="transition: 0.3s;">
+                <a href="/thuc-don?category=<%= category.slug %>" class="list-group-item list-group-item-action border-0 rounded-3 px-3 py-2 dark-menu-item" style="transition: 0.3s;">
                   <%= category.name %>
                 </a>
               <% }) %>
@@ -148,7 +148,11 @@
                     <span class="fw-bold text-warning fs-5">
                       <%= product.price.toLocaleString('vi-VN') %>đ
                     </span>
-                    <button class="btn btn-danger rounded-circle p-0 d-flex align-items-center justify-content-center shadow border-0" style="width: 38px; height: 38px;" title="Thêm vào giỏ hàng">
+                    <button class="btn btn-danger rounded-circle p-0 d-flex align-items-center justify-content-center shadow border-0 add-to-cart-btn" 
+                            style="width: 38px; height: 38px;" 
+                            data-id="<%= product._id || product.id %>"
+                            data-name="<%= product.name %>"
+                            title="Thêm vào giỏ hàng">
                       <i class="bi bi-plus-lg text-white"></i>
                     </button>
                   </div>
@@ -171,3 +175,39 @@
 </main>
 
 <%- include('partials/footer') %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        const productId = this.getAttribute('data-id');
+        const productName = this.getAttribute('data-name');
+
+        try {
+          const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            const badge = document.getElementById('cart-badge');
+            if (badge) badge.innerText = data.cartCount;
+            
+            alert(`Đã thêm món "${productName}" vào giỏ hàng thành công!`);
+          } else {
+            alert('Không thể thêm món ăn: ' + data.message);
+          }
+        } catch (error) {
+          console.error('Lỗi kết nối hệ thống giỏ hàng:', error);
+        }
+      });
+    });
+  });
+</script>
