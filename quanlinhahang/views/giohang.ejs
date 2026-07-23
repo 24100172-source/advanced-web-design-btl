@@ -60,6 +60,9 @@
 
 <%- include('partials/footer') %>
 
+<!-- Nạp thư viện SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 // Hàm tăng / giảm số lượng món bằng Fetch API
 async function updateQuantity(productId, change) {
@@ -93,36 +96,71 @@ async function updateQuantity(productId, change) {
   }
 }
 
-// Hàm xóa hoàn toàn món ăn bằng Fetch API
-async function removeItem(productId) {
-  if (!confirm('Bạn có chắc chắn muốn xóa món ăn này khỏi giỏ hàng?')) return;
-  
-  try {
-    const response = await fetch('/cart/remove', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ productId })
-    });
+// Hàm xóa hoàn toàn món ăn (Đã thay confirm() bằng SweetAlert2)
+function removeItem(productId) {
+  // Hiện bảng thông báo đẹp
+  Swal.fire({
+    title: 'Xóa món ăn?',
+    text: "Bạn có chắc chắn muốn xóa món ăn này khỏi giỏ hàng không?",
+    icon: 'warning',
+    background: '#1a1d24', 
+    color: '#fff',         
+    showCancelButton: true,
+    confirmButtonColor: '#dc3545', 
+    cancelButtonColor: '#6c757d',  
+    confirmButtonText: 'Đúng, xóa luôn!',
+    cancelButtonText: 'Hủy'
+  }).then(async (result) => {
     
-    const data = await response.json();
-    
-    if (data.success) {
-      document.getElementById(`row-${productId}`).remove();
-      
-      if (document.querySelectorAll('.cart-row').length === 0) {
-        location.reload();
-      }
-      
-      document.getElementById('cart-total').innerText = data.newCartTotal.toLocaleString('vi-VN');
-      
-      const badge = document.getElementById('cart-badge');
-      if (badge) badge.innerText = data.cartCount;
-    }
-  } catch (error) {
-    console.error('Lỗi khi xóa món ăn:', error);
-  }
-}
+    // Nếu khách bấm "Đúng, xóa luôn!" thì mới chạy lệnh Fetch API xóa
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch('/cart/remove', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Xóa dòng hiển thị món ăn trên giao diện
+          document.getElementById(`row-${productId}`).remove();
+          
+          if (document.querySelectorAll('.cart-row').length === 0) {
+            location.reload();
+          }
+          
+          // Cập nhật lại tổng tiền và số lượng trên badge
+          document.getElementById('cart-total').innerText = data.newCartTotal.toLocaleString('vi-VN');
+          const badge = document.getElementById('cart-badge');
+          if (badge) badge.innerText = data.cartCount;
 
+          // (Tùy chọn) Hiện thông báo xóa thành công ở góc
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500,
+            icon: 'success',
+            title: 'Đã xóa món ăn!',
+            background: '#1a1d24',
+            color: '#fff'
+          });
+        }
+      } catch (error) {
+        console.error('Lỗi khi xóa món ăn:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi',
+          text: 'Đã xảy ra lỗi khi xóa. Vui lòng thử lại!',
+          background: '#1a1d24',
+          color: '#fff'
+        });
+      }
+    }
+  });
+}
 </script>
 
 <style>

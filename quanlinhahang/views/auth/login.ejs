@@ -1,38 +1,74 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
-<main class="container my-5 py-5">
+<main class="container my-5 py-4">
   <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
-      <div class="p-4 p-md-5 rounded-4 shadow-lg" style="background-color: #1a1614; border: 1px solid #362e29;">
+      <div class="p-4 p-md-5 rounded-4 shadow-lg position-relative" style="background-color: #1a1614; border: 1px solid #362e29;">
         
+        <!-- Header Logo & Tiêu đề -->
         <div class="text-center mb-4">
-          <img src="/images/logo.png" alt="Logo" class="mb-3" style="height: 60px; border-radius: 50%; border: 2px solid #ff4a5a;">
-          <h3 class="fw-bold text-white font-serif">Đăng Nhập</h3>
-          <p class="text-white-50 small">Chào mừng bạn quay lại với Grill House</p>
+          <img src="/images/logo.png" alt="Grill House Logo" class="mb-3 shadow" style="height: 65px; width: 65px; object-fit: cover; border-radius: 50%; border: 2px solid #ff4a5a;" onerror="this.src='/images/default-food.jpg'">
+          <h3 class="fw-bold text-white font-serif mb-1">Đăng Nhập</h3>
+          <p class="text-white-50 small mb-0">Chào mừng bạn quay lại với Grill House</p>
         </div>
 
-        <form action="/auth/login" method="POST" id="booking-form">
+        <!-- Khối hiển thị thông báo lỗi / thành công từ Server (nếu có) -->
+        <% if (locals.error) { %>
+          <div class="alert alert-danger bg-danger text-white border-0 small rounded-3 mb-4 d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+            <div><%= error %></div>
+          </div>
+        <% } %>
+
+        <% if (locals.success) { %>
+          <div class="alert alert-success bg-success text-white border-0 small rounded-3 mb-4 d-flex align-items-center" role="alert">
+            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+            <div><%= success %></div>
+          </div>
+        <% } %>
+
+        <!-- Form Đăng Nhập -->
+        <form action="/auth/login" method="POST" id="login-form">
+          
+          <!-- Ô nhập Tài khoản / Email / SĐT -->
           <div class="mb-3">
             <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Số điện thoại / Email</label>
-            <input type="text" name="username" class="form-control py-2 px-3" style="background-color: #241f1c; color: white; border-color: #362e29;" required placeholder="Nhập tài khoản của bạn">
+            <div class="input-group">
+              <span class="input-group-text custom-input-bg border-end-0 text-white-50">
+                <i class="bi bi-person-fill"></i>
+              </span>
+              <input type="text" name="username" class="form-control custom-input border-start-0 py-2 px-3" required placeholder="Nhập tài khoản của bạn" autocomplete="username">
+            </div>
           </div>
           
+          <!-- Ô nhập Mật khẩu -->
           <div class="mb-4">
-            <div class="d-flex justify-content-between">
-              <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Mật khẩu</label>
-              <a href="/auth/forgot" class="small text-warning text-decoration-none">Quên mật khẩu?</a>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="form-label text-white-50 small fw-bold text-uppercase mb-0" style="letter-spacing: 1px;">Mật khẩu</label>
+              <a href="/auth/forgot" class="small text-warning text-decoration-none hover-underline">Quên mật khẩu?</a>
             </div>
-            <input type="password" name="password" class="form-control py-2 px-3" style="background-color: #241f1c; color: white; border-color: #362e29;" required placeholder="••••••••">
+            <div class="input-group">
+              <span class="input-group-text custom-input-bg border-end-0 text-white-50">
+                <i class="bi bi-lock-fill"></i>
+              </span>
+              <input type="password" name="password" id="password-input" class="form-control custom-input border-start-0 border-end-0 py-2 px-3" required placeholder="••••••••" autocomplete="current-password">
+              <button class="btn custom-input-bg border-start-0 text-white-50" type="button" id="toggle-password" title="Hiện/Ẩn mật khẩu">
+                <i class="bi bi-eye-slash-fill" id="toggle-icon"></i>
+              </button>
+            </div>
           </div>
 
-          <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill py-2 text-dark text-uppercase shadow-sm mb-3" style="transition: 0.3s;">
-            Đăng Nhập
+          <!-- Nút Đăng Nhập -->
+          <button type="submit" id="submit-btn" class="btn btn-warning w-100 fw-bold rounded-pill py-2.5 text-dark text-uppercase shadow-sm mb-3 hover-scale">
+            <span id="btn-text">Đăng Nhập</span>
           </button>
+
         </form>
 
+        <!-- Chuyển hướng Đăng ký -->
         <div class="text-center mt-4 border-top border-secondary pt-3">
-          <p class="text-white-50 small mb-0">Chưa có tài khoản? <a href="/auth/register" class="text-warning fw-bold text-decoration-none">Đăng ký ngay</a></p>
+          <p class="text-white-50 small mb-0">Chưa có tài khoản? <a href="/auth/register" class="text-warning fw-bold text-decoration-none hover-underline">Đăng ký ngay</a></p>
         </div>
 
       </div>
@@ -41,3 +77,75 @@
 </main>
 
 <%- include('../partials/footer') %>
+
+<!-- Script xử lý sự kiện giao diện -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Logic ẩn/hiện mật khẩu
+    const togglePasswordBtn = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('password-input');
+    const toggleIcon = document.getElementById('toggle-icon');
+
+    if (togglePasswordBtn && passwordInput && toggleIcon) {
+      togglePasswordBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.getAttribute('type') === 'password';
+        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+        
+        toggleIcon.classList.toggle('bi-eye-fill', isPassword);
+        toggleIcon.classList.toggle('bi-eye-slash-fill', !isPassword);
+      });
+    }
+
+    // 2. Logic hiển thị vòng xoay chờ khi gửi Form
+    const loginForm = document.getElementById('login-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+
+    if (loginForm && submitBtn) {
+      loginForm.addEventListener('submit', () => {
+        submitBtn.disabled = true;
+        btnText.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang đăng nhập...';
+      });
+    }
+  });
+</script>
+
+<!-- Tùy chỉnh CSS giao diện Tối (Dark Theme) -->
+<style>
+  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .font-serif { font-family: 'Playfair Display', Georgia, serif; }
+  
+  /* Đổi màu ô nhập dữ liệu */
+  .custom-input-bg {
+    background-color: #241f1c !important;
+    border-color: #362e29 !important;
+  }
+  .custom-input {
+    background-color: #241f1c !important;
+    color: #ffffff !important;
+    border-color: #362e29 !important;
+  }
+  .custom-input::placeholder {
+    color: #8c8580 !important;
+  }
+  
+  /* Hiệu ứng Focus viền vàng cho ô Input */
+  .custom-input:focus {
+    background-color: #241f1c !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+    border-color: #ffc107 !important;
+  }
+  .input-group:focus-within .custom-input-bg,
+  .input-group:focus-within .custom-input {
+    border-color: #ffc107 !important;
+  }
+  
+  /* Hiệu ứng Hover nút và Link */
+  .hover-scale { transition: all 0.3s ease; }
+  .hover-scale:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3) !important; 
+  }
+  .hover-underline:hover { text-decoration: underline !important; }
+</style>

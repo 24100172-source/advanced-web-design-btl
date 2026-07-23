@@ -4,50 +4,114 @@
 <main class="container my-5 py-4">
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
-      <div class="p-4 p-md-5 rounded-4 shadow-lg" style="background-color: #1a1614; border: 1px solid #362e29;">
+      <div class="p-4 p-md-5 rounded-4 shadow-lg position-relative" style="background-color: #1a1614; border: 1px solid #362e29;">
         
+        <!-- Header Logo & Tiêu đề -->
         <div class="text-center mb-4">
-          <h3 class="fw-bold text-warning font-serif">Trở Thành Hội Viên</h3>
-          <p class="text-white-50 small">Đăng ký ngay để nhận ưu đãi lên đến 15% cho mỗi bữa ăn.</p>
+          <img src="/images/logo.png" alt="Grill House Logo" class="mb-3 shadow" style="height: 65px; width: 65px; object-fit: cover; border-radius: 50%; border: 2px solid #ff4a5a;" onerror="this.src='/images/default-food.jpg'">
+          <h3 class="fw-bold text-warning font-serif mb-1">Trở Thành Hội Viên</h3>
+          <p class="text-white-50 small mb-0">Đăng ký ngay để nhận ưu đãi lên đến 15% cho mỗi bữa ăn.</p>
         </div>
 
-        <form action="/auth/register" method="POST" id="booking-form">
+        <!-- Khối hiển thị thông báo từ Server (nếu có) -->
+        <% if (locals.error) { %>
+          <div class="alert alert-danger bg-danger text-white border-0 small rounded-3 mb-4 d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+            <div><%= error %></div>
+          </div>
+        <% } %>
+
+        <% if (locals.success) { %>
+          <div class="alert alert-success bg-success text-white border-0 small rounded-3 mb-4 d-flex align-items-center" role="alert">
+            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+            <div><%= success %></div>
+          </div>
+        <% } %>
+
+        <!-- Thẻ thông báo lỗi Client-side (Kiểm tra mật khẩu trùng khớp) -->
+        <div id="client-error-alert" class="alert alert-danger bg-danger text-white border-0 small rounded-3 mb-4 d-none align-items-center" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+          <div id="client-error-text"></div>
+        </div>
+
+        <!-- Form Đăng Ký -->
+        <form action="/auth/register" method="POST" id="register-form">
           <div class="row g-3">
+            
+            <!-- Họ và tên -->
             <div class="col-12">
               <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Họ và tên *</label>
-              <input type="text" name="fullname" class="form-control py-2 px-3" style="background-color: #241f1c; color: white; border-color: #362e29;" required placeholder="VD: Nguyễn Văn A">
+              <div class="input-group">
+                <span class="input-group-text custom-input-bg border-end-0 text-white-50">
+                  <i class="bi bi-person-fill"></i>
+                </span>
+                <input type="text" name="fullname" class="form-control custom-input border-start-0 py-2 px-3" required placeholder="VD: Nguyễn Văn A" value="<%= locals.oldData ? oldData.fullname : '' %>">
+              </div>
             </div>
 
+            <!-- Số điện thoại -->
             <div class="col-md-6">
               <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Số điện thoại *</label>
-              <input type="tel" name="phone" class="form-control py-2 px-3" style="background-color: #241f1c; color: white; border-color: #362e29;" required placeholder="0988 xxx xxx">
+              <div class="input-group">
+                <span class="input-group-text custom-input-bg border-end-0 text-white-50">
+                  <i class="bi bi-telephone-fill"></i>
+                </span>
+                <input type="tel" name="phone" class="form-control custom-input border-start-0 py-2 px-3" required placeholder="0988 xxx xxx" value="<%= locals.oldData ? oldData.phone : '' %>">
+              </div>
             </div>
 
+            <!-- Email -->
             <div class="col-md-6">
               <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Email (Tùy chọn)</label>
-              <input type="email" name="email" class="form-control py-2 px-3" style="background-color: #241f1c; color: white; border-color: #362e29;" placeholder="email@example.com">
+              <div class="input-group">
+                <span class="input-group-text custom-input-bg border-end-0 text-white-50">
+                  <i class="bi bi-envelope-fill"></i>
+                </span>
+                <input type="email" name="email" class="form-control custom-input border-start-0 py-2 px-3" placeholder="email@example.com" value="<%= locals.oldData ? oldData.email : '' %>">
+              </div>
             </div>
             
+            <!-- Mật khẩu -->
             <div class="col-md-6">
               <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Mật khẩu *</label>
-              <input type="password" name="password" class="form-control py-2 px-3" style="background-color: #241f1c; color: white; border-color: #362e29;" required placeholder="Tối thiểu 6 ký tự">
+              <div class="input-group">
+                <span class="input-group-text custom-input-bg border-end-0 text-white-50">
+                  <i class="bi bi-lock-fill"></i>
+                </span>
+                <input type="password" name="password" id="password-input" class="form-control custom-input border-start-0 border-end-0 py-2 px-3" minlength="6" required placeholder="Tối thiểu 6 ký tự">
+                <button class="btn custom-input-bg border-start-0 text-white-50" type="button" id="toggle-password" title="Hiện/Ẩn mật khẩu">
+                  <i class="bi bi-eye-slash-fill" id="toggle-icon-1"></i>
+                </button>
+              </div>
             </div>
 
+            <!-- Nhập lại Mật khẩu -->
             <div class="col-md-6">
               <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Nhập lại Mật khẩu *</label>
-              <input type="password" name="confirm_password" class="form-control py-2 px-3" style="background-color: #241f1c; color: white; border-color: #362e29;" required placeholder="Xác nhận mật khẩu">
+              <div class="input-group">
+                <span class="input-group-text custom-input-bg border-end-0 text-white-50">
+                  <i class="bi bi-shield-lock-fill"></i>
+                </span>
+                <input type="password" name="confirm_password" id="confirm-password-input" class="form-control custom-input border-start-0 border-end-0 py-2 px-3" minlength="6" required placeholder="Xác nhận mật khẩu">
+                <button class="btn custom-input-bg border-start-0 text-white-50" type="button" id="toggle-confirm-password" title="Hiện/Ẩn mật khẩu">
+                  <i class="bi bi-eye-slash-fill" id="toggle-icon-2"></i>
+                </button>
+              </div>
             </div>
 
+            <!-- Nút Đăng Ký -->
             <div class="col-12 mt-4">
-              <button type="submit" class="btn btn-danger w-100 fw-bold rounded-pill py-2 text-white text-uppercase shadow-sm" style="transition: 0.3s; background-color: #ff4a5a; border: none;">
-                Đăng Ký Tài Khoản
+              <button type="submit" id="submit-btn" class="btn btn-danger w-100 fw-bold rounded-pill py-2.5 text-white text-uppercase shadow-sm hover-scale" style="background-color: #ff4a5a; border: none;">
+                <span id="btn-text">Đăng Ký Tài Khoản</span>
               </button>
             </div>
+
           </div>
         </form>
 
+        <!-- Link Chuyển sang Đăng nhập -->
         <div class="text-center mt-4 border-top border-secondary pt-3">
-          <p class="text-white-50 small mb-0">Đã có tài khoản? <a href="/auth/login" class="text-warning fw-bold text-decoration-none">Đăng nhập</a></p>
+          <p class="text-white-50 small mb-0">Đã có tài khoản? <a href="/auth/login" class="text-warning fw-bold text-decoration-none hover-underline">Đăng nhập</a></p>
         </div>
 
       </div>
@@ -56,3 +120,97 @@
 </main>
 
 <%- include('../partials/footer') %>
+
+<!-- Script xử lý giao diện & Validation -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Hàm thiết lập Bật/Tắt hiển thị mật khẩu
+    function setupPasswordToggle(btnId, inputId, iconId) {
+      const btn = document.getElementById(btnId);
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+
+      if (btn && input && icon) {
+        btn.addEventListener('click', () => {
+          const isPassword = input.getAttribute('type') === 'password';
+          input.setAttribute('type', isPassword ? 'text' : 'password');
+          icon.classList.toggle('bi-eye-fill', isPassword);
+          icon.classList.toggle('bi-eye-slash-fill', !isPassword);
+        });
+      }
+    }
+
+    setupPasswordToggle('toggle-password', 'password-input', 'toggle-icon-1');
+    setupPasswordToggle('toggle-confirm-password', 'confirm-password-input', 'toggle-icon-2');
+
+    // 2. Validate mật khẩu trùng khớp & Trạng thái Spinner
+    const registerForm = document.getElementById('register-form');
+    const passInput = document.getElementById('password-input');
+    const confirmPassInput = document.getElementById('confirm-password-input');
+    const clientAlert = document.getElementById('client-error-alert');
+    const clientText = document.getElementById('client-error-text');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+
+    if (registerForm) {
+      registerForm.addEventListener('submit', (e) => {
+        // Kiểm tra khớp mật khẩu
+        if (passInput.value !== confirmPassInput.value) {
+          e.preventDefault(); // Dừng việc gửi form
+          clientAlert.classList.remove('d-none');
+          clientAlert.classList.add('d-flex');
+          clientText.innerText = 'Mật khẩu xác nhận không trùng khớp. Vui lòng kiểm tra lại!';
+          confirmPassInput.focus();
+          return;
+        }
+
+        // Khi dữ liệu hợp lệ
+        clientAlert.classList.add('d-none');
+        clientAlert.classList.remove('d-flex');
+
+        submitBtn.disabled = true;
+        btnText.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang khởi tạo tài khoản...';
+      });
+    }
+  });
+</script>
+
+<!-- Tùy chỉnh CSS giao diện Tối -->
+<style>
+  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .font-serif { font-family: 'Playfair Display', Georgia, serif; }
+  
+  /* Styling Input Dark Theme */
+  .custom-input-bg {
+    background-color: #241f1c !important;
+    border-color: #362e29 !important;
+  }
+  .custom-input {
+    background-color: #241f1c !important;
+    color: #ffffff !important;
+    border-color: #362e29 !important;
+  }
+  .custom-input::placeholder {
+    color: #8c8580 !important;
+  }
+  
+  /* Focus Border Vàng */
+  .custom-input:focus {
+    background-color: #241f1c !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+    border-color: #ffc107 !important;
+  }
+  .input-group:focus-within .custom-input-bg,
+  .input-group:focus-within .custom-input {
+    border-color: #ffc107 !important;
+  }
+  
+  /* Hover Nút & Link */
+  .hover-scale { transition: all 0.3s ease; }
+  .hover-scale:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 20px rgba(255, 74, 90, 0.35) !important; 
+  }
+  .hover-underline:hover { text-decoration: underline !important; }
+</style>

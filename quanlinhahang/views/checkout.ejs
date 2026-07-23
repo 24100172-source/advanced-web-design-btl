@@ -10,6 +10,7 @@
 
     <div class="row g-5 justify-content-center">
         
+        <!-- CỘT TRÁI: FORM ĐIỀN THÔNG TIN -->
         <div class="col-lg-7">
             <div class="card border-0 rounded-4 p-4 p-md-5" style="background: #181310; border: 1px solid #362e29 !important; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
                 <h4 class="text-warning font-serif mb-4 fw-bold pb-2 border-bottom" style="border-color: #362e29 !important;">
@@ -40,7 +41,7 @@
                                 <label class="payment-card-option w-100 p-3 rounded-3 text-center border d-block position-relative" for="payCod">
                                     <input class="form-check-input position-absolute top-0 start-0 m-2" type="radio" name="payment_method" id="payCod" value="cod" checked>
                                     <i class="bi bi-cash-coin fs-2 text-warning d-block mb-2"></i>
-                                    <span class="text-white d-block small fw-bold">Tiền mặt (COD)</span>
+                                    <span class="text-white d-block small fw-bold">Tiền mặt</span>
                                 </label>
                             </div>
                             <div class="col-md-6">
@@ -50,6 +51,14 @@
                                     <span class="text-white d-block small fw-bold">Chuyển khoản QR</span>
                                 </label>
                             </div>
+                        </div>
+
+                        <!-- KHỐI HIỂN THỊ MÃ QR (Mặc định ẩn) -->
+                        <div id="qrCodeSection" class="d-none text-center mt-3 p-3 bg-dark rounded border border-secondary" style="border-color: #362e29 !important;">
+                            <h6 class="text-warning mb-2 fw-bold">Quét mã QR để thanh toán</h6>
+                            <p class="text-white-50 small mb-2">Vui lòng chuyển khoản với nội dung: <strong>SĐT của bạn</strong></p>
+                            <!-- Đổi link ảnh bên dưới thành mã QR thật của bạn -->
+                            <img src="images/qr-code.jpg" alt="Mã QR Thanh Toán" class="img-fluid rounded border border-secondary" style="max-width: 200px; background: white; padding: 10px;" onerror="this.src='https://via.placeholder.com/200x200.png?text=QR+Code'">
                         </div>
                     </div>
 
@@ -65,6 +74,7 @@
             </div>
         </div>
 
+        <!-- CỘT PHẢI: THÔNG TIN ĐƠN HÀNG GIỎ HÀNG -->
         <div class="col-lg-5">
             <div class="card border-0 rounded-4 p-4 sticky-top" style="background: #181310; border: 1px solid #362e29 !important; top: 100px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
                 <h4 class="text-warning font-serif mb-4 fw-bold pb-2 border-bottom" style="border-color: #362e29 !important;">
@@ -121,61 +131,87 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+    // 1. XỬ LÝ ẨN/HIỆN MÃ QR
+    const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+    const qrSection = document.getElementById('qrCodeSection');
 
-    const formData = {
-        fullname: this.fullname.value,
-        phone: this.phone.value,
-        address: this.address.value,
-        payment_method: this.payment_method.value,
-        note: this.note.value
-    };
-
-    Swal.fire({
-        title: 'Đang xử lý đơn hàng...',
-        allowOutsideClick: false,
-        background: '#181310',
-        color: '#fff',
-        didOpen: () => {
-            Swal.showLoading();
-        }
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'qr') {
+                qrSection.classList.remove('d-none'); // Hiện mã QR
+            } else {
+                qrSection.classList.add('d-none');    // Ẩn mã QR
+            }
+        });
     });
 
-    try {
-        const response = await fetch('/thanh-toan', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
+    // 2. XỬ LÝ SUBMIT FORM (Đã sửa lỗi)
+    document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Lấy phương thức thanh toán đang được chọn
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
+        // Lấy dữ liệu gửi đi
+        const formData = {
+            fullname: this.fullname.value,
+            phone: this.phone.value,
+            payment_method: paymentMethod,
+            note: this.note.value
+        };
+
+        Swal.fire({
+            title: 'Đang xử lý đơn hàng...',
+            allowOutsideClick: false,
+            background: '#181310',
+            color: '#fff',
+            didOpen: () => {
+                Swal.showLoading();
+            }
         });
 
-        const result = await response.json();
-
-        if (result.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Đặt Hàng Thành Công!',
-                text: 'Cảm ơn bạn đã lựa chọn Grill House. Nhân viên sẽ liên hệ sớm nhất!',
-                background: '#181310',
-                color: '#fff',
-                confirmButtonColor: '#ffc107'
-            }).then(() => {
-                window.location.href = '/'; 
+        try {
+            const response = await fetch('/thanh-toan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
             });
-        } else {
+
+            const result = await response.json();
+
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đơn Hàng Thành Công!',
+                    text: 'Cảm ơn bạn đã lựa chọn Grill House.',
+                    background: '#181310',
+                    color: '#fff',
+                    confirmButtonColor: '#ffc107'
+                }).then(() => {
+                    window.location.href = '/'; 
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: result.message || 'Có lỗi xảy ra, vui lòng thử lại!',
+                    background: '#181310',
+                    color: '#fff',
+                    confirmButtonColor: '#ffc107'
+                });
+            }
+        } catch (error) {
+            console.error("Lỗi:", error);
             Swal.fire({
                 icon: 'error',
-                title: 'Lỗi',
-                text: result.message,
+                title: 'Lỗi Hệ Thống',
+                text: 'Không thể kết nối đến máy chủ!',
                 background: '#181310',
                 color: '#fff',
                 confirmButtonColor: '#ffc107'
             });
         }
-    } catch (error) {
-        console.error("Lỗi:", error);
-    }
-});
+    });
 </script>
 
 <style>

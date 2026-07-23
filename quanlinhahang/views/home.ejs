@@ -6,7 +6,6 @@
   <section class="hero-section row g-0 mb-5 shadow-lg rounded-4 overflow-hidden" style="background-color: #0f1014;">
     
     <div class="col-md-5 p-5 d-flex flex-column"> 
-      
       <div class="mt-4">
         <h6 class="text-warning text-uppercase mb-3 tracking-wider" style="letter-spacing: 2px;">Nhà Hàng Grill House</h6>
         <h1 class="fw-black display-4 mb-3 text-white lh-sm" style="font-weight: 800;">COMBO<br>THỊT NƯỚNG<br>& LẨU</h1>
@@ -15,15 +14,15 @@
       
       <div class="mt-4 mb-4 d-flex flex-column gap-3">
         <div class="d-flex align-items-center text-white-50">
-          <i class="bi bi-check-circle-fill text-warning me-3 fs-5"></i>
+          <i class="bi bi-check-circle-fill text-warning me-3 fs-5" aria-hidden="true"></i>
           <span class="small">100% Thịt bò Wagyu & USDA thượng hạng</span>
         </div>
         <div class="d-flex align-items-center text-white-50">
-          <i class="bi bi-check-circle-fill text-warning me-3 fs-5"></i>
+          <i class="bi bi-check-circle-fill text-warning me-3 fs-5" aria-hidden="true"></i>
           <span class="small">Hơn 15 loại Panchan (đồ ăn kèm) làm mới mỗi ngày</span>
         </div>
         <div class="d-flex align-items-center text-white-50">
-          <i class="bi bi-check-circle-fill text-warning me-3 fs-5"></i>
+          <i class="bi bi-check-circle-fill text-warning me-3 fs-5" aria-hidden="true"></i>
           <span class="small">Không gian riêng tư, hệ thống hút mùi hiện đại</span>
         </div>
       </div>
@@ -34,17 +33,20 @@
         </div>
         
         <div class="pt-4 border-top border-secondary row text-secondary small align-items-center">
-          <div class="col-6"><i class="bi bi-telephone me-2"></i>+84 988 655 622</div>
-          <div class="col-6 text-end"><i class="bi bi-envelope me-2"></i>contact@grillhouse.vn</div>
+          <div class="col-6"><i class="bi bi-telephone me-2" aria-hidden="true"></i>+84 988 655 622</div>
+          <div class="col-6 text-end"><i class="bi bi-envelope me-2" aria-hidden="true"></i>contact@grillhouse.vn</div>
         </div>
       </div>
-      
-    </div> <div class="col-md-7 p-3 p-md-4">
+    </div> 
+
+    <div class="col-md-7 p-3 p-md-4">
       <div class="row g-3 h-100">
-        <div class="col-6"><img src="/images/hero-1.jpg" class="img-fluid rounded-3 w-100 h-100 object-fit-cover hero-img-box" alt="food"></div>
-        <div class="col-6"><img src="/images/hero-2.jpg" class="img-fluid rounded-3 w-100 h-100 object-fit-cover hero-img-box" alt="food"></div>
-        <div class="col-6"><img src="/images/hero-3.jpg" class="img-fluid rounded-3 w-100 h-100 object-fit-cover hero-img-box" alt="food"></div>
-        <div class="col-6"><img src="/images/hero-4.jpg" class="img-fluid rounded-3 w-100 h-100 object-fit-cover hero-img-box" alt="food"></div>
+        <!-- Ảnh đầu tiên không dùng lazy load để tối ưu LCP -->
+        <div class="col-6"><img src="/images/hero-1.jpg" class="img-fluid rounded-3 w-100 h-100 object-fit-cover hero-img-box" alt="Thịt nướng Hàn Quốc 1"></div>
+        <!-- Các ảnh sau dùng lazy load -->
+        <div class="col-6"><img src="/images/hero-2.jpg" loading="lazy" class="img-fluid rounded-3 w-100 h-100 object-fit-cover hero-img-box" alt="Thịt nướng Hàn Quốc 2"></div>
+        <div class="col-6"><img src="/images/hero-3.jpg" loading="lazy" class="img-fluid rounded-3 w-100 h-100 object-fit-cover hero-img-box" alt="Thịt nướng Hàn Quốc 3"></div>
+        <div class="col-6"><img src="/images/hero-4.jpg" loading="lazy" class="img-fluid rounded-3 w-100 h-100 object-fit-cover hero-img-box" alt="Thịt nướng Hàn Quốc 4"></div>
       </div>
     </div>
     
@@ -53,7 +55,8 @@
   <section class="row g-4 mb-5">
     <div class="col-md-6">
       <div class="h-100 rounded-4 overflow-hidden shadow-lg position-relative border" style="border-color: #2a2c35 !important; min-height: 480px;">
-        <img src="/images/promo-menu.jpg" class="position-absolute top-0 start-0 img-fluid w-100 h-100 object-fit-cover" alt="Promo Banner">
+        <!-- Tối ưu lazy loading cho banner -->
+        <img src="/images/promo-menu.jpg" loading="lazy" class="position-absolute top-0 start-0 img-fluid w-100 h-100 object-fit-cover" alt="Banner khuyến mãi Menu 2024">
         
         <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);">
           <span class="badge bg-warning text-dark mb-2 px-3 py-2 rounded-pill fw-bold">MENU MỚI 2024</span>
@@ -64,7 +67,6 @@
     </div>
 
     <div class="col-md-6 d-flex flex-column gap-3">
-      
       <div class="p-4 p-lg-5 shadow-lg rounded-4 flex-grow-1 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, #7a1212 0%, #4a0808 100%); border: 1px solid #8c1a1a;">
         <div class="text-center mb-4">
           <h4 class="text-warning fw-bold tracking-wide mb-2" style="letter-spacing: 1.5px;">ƯU ĐÃI ĐẶC BIỆT</h4>
@@ -98,18 +100,15 @@
         </div>
         <a href="/dat-ban" class="btn btn-warning fw-bold text-dark rounded-pill px-4 flex-shrink-0 border-0 shadow">Đặt bàn ngay</a>
       </div>
-
     </div>
   </section>
 
   <section class="best-seller-section rounded-4 shadow-lg mb-5 pb-5 pt-4 px-3 best-seller-bg">
-    
     <div class="text-center mb-5 mt-3">
       <h2 class="fw-bold text-warning font-serif fs-1">✨ Best Seller ✨</h2>
     </div>
     
     <div class="row px-lg-3">
-      
       <div class="col-md-3 mb-4 mb-md-0">
         <div class="p-3 rounded-4 shadow-sm h-100 dark-sidebar">
           <div class="bg-warning text-dark p-2 text-center rounded-3 mb-3 fw-bold text-uppercase small tracking-wide">Danh Mục Menu</div>
@@ -132,12 +131,12 @@
         <div class="row row-cols-1 row-cols-md-3 g-4 pb-4">
           <% if(bestSellers && bestSellers.length > 0) { %>
             <% bestSellers.forEach(product => { %>
-              
               <div class="col mb-4">
                 <div class="card dark-food-card p-3 h-100 d-flex flex-column justify-content-between align-items-center rounded-4 shadow-sm">
                   
                   <div class="position-relative w-100 d-flex justify-content-center food-img-wrapper">
-                    <img src="/<%= product.image_url %>" alt="<%= product.name %>" class="rounded-circle object-fit-cover shadow-lg border border-4" style="width: 130px; height: 130px;" onerror="this.src='/images/default-food.jpg'">
+                    <!-- Tối ưu lazy loading cho ảnh món ăn -->
+                    <img src="/<%= product.image_url %>" loading="lazy" alt="<%= product.name %>" class="rounded-circle object-fit-cover shadow-lg border border-4" style="width: 130px; height: 130px;" onerror="this.src='/images/default-food.jpg'">
                   </div>
                   
                   <div class="card-body p-0 mt-3 text-center w-100">
@@ -148,18 +147,19 @@
                     <span class="fw-bold text-warning fs-5">
                       <%= product.price.toLocaleString('vi-VN') %>đ
                     </span>
+                    <!-- Thêm aria-label để hỗ trợ đọc màn hình -->
                     <button class="btn btn-danger rounded-circle p-0 d-flex align-items-center justify-content-center shadow border-0 add-to-cart-btn" 
                             style="width: 38px; height: 38px;" 
                             data-id="<%= product._id || product.id %>"
                             data-name="<%= product.name %>"
-                            title="Thêm vào giỏ hàng">
-                      <i class="bi bi-plus-lg text-white"></i>
+                            title="Thêm vào giỏ hàng"
+                            aria-label="Thêm <%= product.name %> vào giỏ hàng">
+                      <i class="bi bi-plus-lg text-white" aria-hidden="true"></i>
                     </button>
                   </div>
                   
                 </div>
               </div>
-              
             <% }) %>
           <% } else { %>
             <div class="col-12 text-center py-5">
@@ -168,7 +168,6 @@
           <% } %>
         </div>
       </div>
-      
     </div>
   </section>
 
@@ -176,13 +175,34 @@
 
 <%- include('partials/footer') %>
 
+<!-- Núng thư viện SweetAlert2 để tạo thông báo đẹp -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
 
+    // Khởi tạo giao diện thông báo Toast (nhỏ gọn góc phải)
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 2500,
+      timerProgressBar: true,
+      background: '#1a1d24',
+      color: '#fff',
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    });
+
     addToCartButtons.forEach(button => {
       button.addEventListener('click', async function(e) {
         e.preventDefault();
+        
+        // Disable nút tạm thời để chống spam click
+        this.disabled = true;
         
         const productId = this.getAttribute('data-id');
         const productName = this.getAttribute('data-name');
@@ -197,15 +217,38 @@
           const data = await response.json();
           
           if (data.success) {
+            // Cập nhật số lượng trên giỏ hàng ngay lập tức
             const badge = document.getElementById('cart-badge');
-            if (badge) badge.innerText = data.cartCount;
+            if (badge) {
+              badge.innerText = data.cartCount;
+              badge.classList.add('animate__animated', 'animate__bounceIn'); // Nếu bạn có dùng Animate.css
+            }
             
-            alert(`Đã thêm món "${productName}" vào giỏ hàng thành công!`);
+            // Hiển thị thông báo thành công đẹp mắt
+            Toast.fire({
+              icon: 'success',
+              title: `Đã thêm "${productName}" vào giỏ hàng!`
+            });
           } else {
-            alert('Không thể thêm món ăn: ' + data.message);
+            // Thông báo lỗi
+            Swal.fire({
+              icon: 'error',
+              title: 'Thất bại',
+              text: data.message || 'Không thể thêm món ăn này.',
+              background: '#1a1d24',
+              color: '#fff',
+              confirmButtonColor: '#ffc107'
+            });
           }
         } catch (error) {
           console.error('Lỗi kết nối hệ thống giỏ hàng:', error);
+          Toast.fire({
+            icon: 'error',
+            title: 'Lỗi mạng, vui lòng thử lại!'
+          });
+        } finally {
+          // Mở lại nút sau khi xử lý xong
+          this.disabled = false;
         }
       });
     });

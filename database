@@ -47,6 +47,39 @@ CREATE TABLE articles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(100) NOT NULL,
+    phone VARCHAR(15) NOT NULL UNIQUE,
+    email VARCHAR(100) NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('user', 'admin') DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Bảng lưu thông tin chung của Đơn hàng (Orders)
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(100) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    total_amount INT NOT NULL,
+    status ENUM('pending', 'processing', 'completed', 'cancelled') DEFAULT 'pending',
+    note TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- Bảng lưu chi tiết từng món ăn trong Đơn hàng (Order Details)
+CREATE TABLE order_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    price INT NOT NULL, -- Giá tại thời điểm mua
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
 INSERT INTO categories (id, name, slug) VALUES 
 (1, 'CHEF\'S RECOMMENDATION', 'chefs-recommendation'),
 (2, 'KABUBI SERIES', 'kabubi-series'),
@@ -198,19 +231,30 @@ INSERT INTO articles (title, tag, image_url, summary, content) VALUES
     'Sự kiện', 
     'images/chi-nhanh-moi.jpg', 
     'Nhân dịp khai trương chi nhánh mới, nhà hàng tặng ngay ưu đãi giảm giá 20% cho toàn bộ dịch vụ đặt bàn trước qua website. Nhanh tay đặt bàn để nhận ưu đãi!', 
-    '<p>Nội dung chi tiết bài viết về chi nhánh thứ 3 sẽ nằm ở đây...</p>'
+    '<p>Chào đón thành viên thứ 3 gia nhập chuỗi hệ thống <strong>Grill House</strong>! Nhằm đáp ứng nhu cầu ngày càng lớn của thực khách yêu thích ẩm thực nướng, chúng tôi chính thức khai trương chi nhánh mới với không gian vô cùng rộng rãi, mang đậm phong cách thiết kế sang trọng nhưng không kém phần ấm cúng.</p>
+    <p>Đến với cơ sở mới này, bạn không chỉ được thưởng thức những thớ thịt nướng xèo xèo hấp dẫn, mà còn được trải nghiệm hệ thống hút khói âm bàn hiện đại bậc nhất, giúp bữa ăn thêm phần trọn vẹn mà không lo bám mùi quần áo.</p>
+    <p><strong>🎁 Ưu đãi đặc biệt:</strong> Giảm ngay 20% tổng hóa đơn cho mọi khách hàng đặt bàn trước qua website từ nay đến hết tháng. Hãy cùng gia đình và bạn bè đến chung vui và nhận những phần quà hấp dẫn từ Grill House nhé!</p>'
 ),
 (
     'Ra mắt Menu Mùa Hè mới thanh mát', 
     'Ẩm thực', 
     'images/menu-moi.jpg', 
     'Đội ngũ đầu bếp chuẩn 5 sao vừa cho ra mắt bộ sưu tập các món ăn mùa hè sử dụng nguyên liệu tươi sạch, giúp thanh nhiệt cơ thể trong những ngày oi bức.', 
-    '<p>Nội dung chi tiết về menu mùa hè sẽ nằm ở đây...</p>'
+    '<p>Mùa hè oi ả đã gõ cửa, và để xua tan cái nóng bực bội, <strong>Grill House</strong> tự hào giới thiệu <em>Menu Mùa Hè</em> hoàn toàn mới, mang đến làn gió thanh mát cho vị giác của bạn.</p>
+    <p>Bộ sưu tập lần này là sự kết hợp hoàn hảo giữa các loại thịt nướng thượng hạng được tẩm ướp bằng nước sốt trái cây nhiệt đới, ăn kèm cùng các món giải nhiệt độc đáo như: Salad bơ tôm bưởi hồng, súp lạnh Tây Ban Nha, và nước sốt chanh leo chua ngọt độc quyền giúp cân bằng vị béo ngậy của thịt.</p>
+    <p>Không chỉ ngon miệng, thực đơn mới còn chú trọng vào giá trị dinh dưỡng, bổ sung nhiều khoáng chất từ rau củ quả hữu cơ nhập mới mỗi ngày. Đừng để cái nóng làm mất đi niềm vui ẩm thực, ghé Grill House ngay để trải nghiệm hương vị mùa hè bùng nổ!</p>'
 ),
 (
     'Bí quyết nướng thịt bò Wagyu ngon chuẩn vị', 
     'Cẩm nang', 
     'images/nuong-bo-wagyu.jpg', 
     'Khám phá cách các đầu bếp tại Grill House giữ nguyên vị ngọt nguyên bản của thịt bò thượng hạng mà không làm mất đi độ mềm mọng mọng nước.', 
-    '<p>Nội dung hướng dẫn cách nướng thịt bò sẽ nằm ở đây...</p>'
+    '<p>Bò Wagyu nổi tiếng toàn thế giới với những vân mỡ cẩm thạch đan xen tuyệt đẹp, mang lại độ mềm tan như bơ khi thưởng thức. Tuy nhiên, để nướng được một miếng Wagyu hoàn hảo, không bị khô hay mất chất lại là cả một nghệ thuật.</p>
+    <p>Tại <strong>Grill House</strong>, các đầu bếp của chúng tôi áp dụng nguyên tắc <em>"Lửa lớn - Thời gian ngắn"</em>:</p>
+    <ul>
+        <li><strong>Vỉ nướng phải thật nóng:</strong> Giúp tạo lớp vỏ xém vàng tức thì (phản ứng Maillard), khóa chặt lớp nước thịt ngọt ngào bên trong.</li>
+        <li><strong>Hạn chế lật thịt:</strong> Chỉ lật một lần duy nhất khi bề mặt trên bắt đầu rướm nước đỏ.</li>
+        <li><strong>Thời gian nghỉ (Resting):</strong> Đây là bước quan trọng nhất. Sau khi lấy ra khỏi vỉ, hãy để miếng Wagyu "nghỉ" trên đĩa khoảng 2-3 phút. Việc này giúp nước thịt phân bố đều trở lại, miếng thịt sẽ mọng nước từ trong ra ngoài.</li>
+    </ul>
+    <p>Nếu bạn muốn tự tay nướng những miếng thịt tuyệt hảo này, đừng ngại yêu cầu nhân viên của Grill House hỗ trợ canh nhiệt độ và hướng dẫn trực tiếp tại bàn nhé. Chúc bạn có một bữa tiệc nướng thăng hoa!</p>'
 );

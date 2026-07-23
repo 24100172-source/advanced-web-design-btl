@@ -5,6 +5,7 @@
 
 <main class="container my-4">
 
+  <!-- Section Banner Header -->
   <section class="hero-section row g-0 mb-5 shadow-lg rounded-4 overflow-hidden" style="background-color: #0f1014; min-height: 250px;">
     <div class="col-12 p-5 text-center d-flex flex-column justify-content-center align-items-center bg-dark" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('/images/menu-banner.jpg') center/cover;">
       <h6 class="text-warning text-uppercase mb-3 tracking-wider" style="letter-spacing: 3px;">Khám Phá Hương Vị</h6>
@@ -13,9 +14,11 @@
     </div>
   </section>
 
+  <!-- Section Main Content -->
   <section class="best-seller-section rounded-4 shadow-lg mb-5 pb-5 pt-4 px-3 best-seller-bg">
     <div class="row px-lg-3">
       
+      <!-- Cột Menu Danh Mục (Sidebar) -->
       <div class="col-md-3 mb-4 mb-md-0">
         <div class="p-3 rounded-4 shadow-sm h-100 dark-sidebar sticky-md-top" style="top: 100px; z-index: 10;">
           <div class="bg-warning text-dark p-2 text-center rounded-3 mb-3 fw-bold text-uppercase small tracking-wide">
@@ -23,13 +26,17 @@
           </div>
           
           <div class="list-group sidebar-menu-list custom-scrollbar border-0 gap-2">
-            <a href="/thuc-don<%= locals.currentSort ? '?sort=' + currentSort : '' %>" class="list-group-item list-group-item-action border-0 rounded-3 px-3 py-2 dark-menu-item <%= !locals.currentCategorySlug ? 'active' : '' %>" style="transition: 0.3s;">
+            <a href="/thuc-don<%= locals.currentSort ? '?sort=' + currentSort : '' %>" 
+               class="list-group-item list-group-item-action border-0 rounded-3 px-3 py-2 dark-menu-item <%= !locals.currentCategorySlug ? 'active' : '' %>" 
+               style="transition: 0.3s;">
               Tất cả món ăn
             </a>
             
             <% if(categories && categories.length > 0) { %>
               <% categories.forEach((category) => { %>
-                <a href="/thuc-don?category=<%= category.slug %><%= locals.currentSort ? '&sort=' + currentSort : '' %>" class="list-group-item list-group-item-action border-0 rounded-3 px-3 py-2 dark-menu-item <%= locals.currentCategorySlug === category.slug ? 'active' : '' %>" style="transition: 0.3s;">
+                <a href="/thuc-don?category=<%= category.slug %><%= locals.currentSort ? '&sort=' + currentSort : '' %>" 
+                   class="list-group-item list-group-item-action border-0 rounded-3 px-3 py-2 dark-menu-item <%= locals.currentCategorySlug === category.slug ? 'active' : '' %>" 
+                   style="transition: 0.3s;">
                   <%= category.name %>
                 </a>
               <% }) %>
@@ -40,8 +47,10 @@
         </div>
       </div>
       
+      <!-- Cột Danh Sách Sản Phẩm -->
       <div class="col-md-9">
         
+        <!-- Tiêu đề và Bộ lọc sắp xếp -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 mt-2 px-2">
           <h4 class="text-white fw-bold mb-2 mb-md-0 font-serif">
             <%= typeof currentCategoryName !== 'undefined' ? currentCategoryName : 'Tất Cả Món Ăn' %>
@@ -60,6 +69,7 @@
           </div>
         </div>
 
+        <!-- Lưới Hiển Thị Món Ăn -->
         <div class="row row-cols-1 row-cols-md-3 g-4 pb-4">
           <% if(products && products.length > 0) { %>
             <% products.forEach(product => { %>
@@ -68,7 +78,8 @@
                 <div class="card dark-food-card p-3 h-100 d-flex flex-column justify-content-between align-items-center rounded-4 shadow-sm">
                   
                   <div class="position-relative w-100 d-flex justify-content-center food-img-wrapper">
-                    <img src="/<%= product.image_url %>" alt="<%= product.name %> - Thực đơn Grill House" class="rounded-circle object-fit-cover shadow-lg border border-4" style="width: 130px; height: 130px;" onerror="this.src='/images/default-food.jpg'">
+                    <!-- Đã thêm loading="lazy" để tối ưu tốc độ tải trang -->
+                    <img src="/<%= product.image_url %>" loading="lazy" alt="<%= product.name %>" class="rounded-circle object-fit-cover shadow-lg border border-4" style="width: 130px; height: 130px;" onerror="this.src='/images/default-food.jpg'">
                   </div>
                   
                   <div class="card-body p-0 mt-3 text-center w-100">
@@ -83,15 +94,15 @@
                       <%= product.price.toLocaleString('vi-VN') %>đ
                     </span>
                     
-                    <button class="add-btn shadow border-0 add-to-cart-btn"
-                    data-id="<%= product._id || product.id %>"
-                    data-name="<%= product.name %>"
-                    data-price="<%= product.price %>"
-                    data-image="<%= product.image_url %>"
-                    title="Thêm vào giỏ hàng"
-                    onclick="addToCart('<%= product._id || product.id %>')">
-                  <i class="bi bi-plus-lg text-white" aria-hidden="true"></i>
-                </button>
+                    <!-- Nút thêm vào giỏ hàng được thiết kế lại, dùng class JS -->
+                    <button class="btn btn-danger rounded-circle p-0 d-flex align-items-center justify-content-center shadow border-0 add-to-cart-btn"
+                            style="width: 38px; height: 38px;"
+                            data-id="<%= product._id || product.id %>"
+                            data-name="<%= product.name %>"
+                            title="Thêm vào giỏ hàng"
+                            aria-label="Thêm <%= product.name %> vào giỏ hàng">
+                      <i class="bi bi-plus-lg text-white" aria-hidden="true"></i>
+                    </button>
                   </div>
                   
                 </div>
@@ -106,6 +117,7 @@
           <% } %>
         </div>
 
+        <!-- Phân Trang (Pagination) -->
         <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
           <% 
             const baseUrl = '?';
@@ -146,70 +158,39 @@
 
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-async function addToCart(productId) {
-    try {
-        const response = await fetch('/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ productId: productId })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-                background: '#181310',
-                color: '#fff',
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-
-            Toast.fire({
-                icon: 'success',
-                title: 'Đã thêm món ăn vào giỏ hàng!'
-            });
-
-            const cartBadge = document.getElementById('cart-badge') || document.querySelector('.badge');
-            if (cartBadge) {
-                cartBadge.innerText = data.cartCount;
-            }
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Thất bại',
-                text: data.message || 'Không thể thêm món ăn vào giỏ hàng.',
-                background: '#181310',
-                color: '#fff',
-                confirmButtonColor: '#ffc107'
-            });
-        }
-    } catch (error) {
-        console.error('Lỗi thêm giỏ hàng:', error);
-    }
-}
-</script>
-
 <%- include('partials/footer') %>
 
+<!-- Script SweetAlert2 & Logic Giỏ Hàng -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // Tìm tất cả các nút có class .add-to-cart-btn
     const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
 
+    // Khởi tạo giao diện Toast nhỏ gọn góc màn hình
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      background: '#1a1d24',
+      color: '#fff',
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    });
+
+    // Duyệt qua từng nút và gắn sự kiện click
     addToCartButtons.forEach(button => {
       button.addEventListener('click', async function(e) {
         e.preventDefault();
+        
+        // Vô hiệu hóa nút tạm thời để tránh ấn đúp (spam click)
+        const originalHTML = this.innerHTML;
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
         
         const productId = this.getAttribute('data-id');
         const productName = this.getAttribute('data-name');
@@ -218,21 +199,42 @@ async function addToCart(productId) {
           const response = await fetch('/cart/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId })
+            body: JSON.stringify({ productId: productId })
           });
           
           const data = await response.json();
           
           if (data.success) {
-            const badge = document.getElementById('cart-badge');
+            // Cập nhật số lượng giỏ hàng trên thanh điều hướng (badge)
+            const badge = document.getElementById('cart-badge') || document.querySelector('.badge');
             if (badge) badge.innerText = data.cartCount;
             
-            alert(`Đã thêm món "${productName}" vào giỏ hàng thành công!`);
+            // Hiện thông báo thành công đẹp mắt
+            Toast.fire({
+              icon: 'success',
+              title: `Đã thêm "${productName}" vào giỏ hàng!`
+            });
           } else {
-            alert('Không thể thêm món ăn: ' + data.message);
+            // Hiển thị thông báo lỗi nếu thêm thất bại (hết hàng, lỗi server...)
+            Swal.fire({
+              icon: 'error',
+              title: 'Không thể thêm món ăn',
+              text: data.message || 'Có lỗi xảy ra, vui lòng thử lại.',
+              background: '#1a1d24',
+              color: '#fff',
+              confirmButtonColor: '#ffc107'
+            });
           }
         } catch (error) {
-          console.error('Lỗi kết nối hệ thống giỏ hàng:', error);
+          console.error('Lỗi kết nối API giỏ hàng:', error);
+          Toast.fire({
+            icon: 'error',
+            title: 'Lỗi mạng, không thể thêm vào giỏ!'
+          });
+        } finally {
+          // Khôi phục lại trạng thái của nút sau khi xử lý xong
+          this.disabled = false; 
+          this.innerHTML = originalHTML;
         }
       });
     });
