@@ -12,8 +12,8 @@
 #booking-form .form-select:focus {
     background-color: #241f1c !important;
     color: #ffffff !important;
-    border-color: #ffc107 !important; /* Đổi viền xanh Bootstrap thành vàng Grill House */
-    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.15) !important; /* Đổ bóng vàng nhẹ */
+    border-color: #ffc107 !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.15) !important; 
 }
 
 #booking-form .form-control::placeholder {

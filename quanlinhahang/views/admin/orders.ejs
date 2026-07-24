@@ -1,0 +1,124 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container my-5 py-4" style="min-height: 80vh;">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+        <div>
+            <h2 class="fw-bold text-white font-serif mb-1">Quản Lý Đơn Hàng</h2>
+            <p class="text-white-50 mb-0 small">Xem thông tin và cập nhật trạng thái đơn đặt món từ khách hàng</p>
+        </div>
+        <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill fw-bold">
+            Tổng: <%= orders.length %> đơn hàng
+        </span>
+    </div>
+
+    <div class="card border-0 rounded-4 overflow-hidden shadow-lg" style="background: #181310; border: 1px solid #362e29 !important;">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead style="background-color: #212529;">
+                    <tr class="text-warning text-uppercase small" style="letter-spacing: 1px;">
+                        <th class="py-3 px-4">Mã Đơn</th>
+                        <th class="py-3">Khách Hàng</th>
+                        <th class="py-3">Chi Tiết Đơn Hàng</th>
+                        <th class="py-3">Tổng Tiền</th>
+                        <th class="py-3">Thanh Toán</th>
+                        <th class="py-3">Trạng Thái</th>
+                        <th class="py-3 px-4 text-end">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (orders && orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
+                            <tr class="border-bottom" style="border-color: #2b2420 !important;">
+                                <td class="px-4 fw-bold text-warning">#<%= order.id %></td>
+                                <td>
+                                    <div class="fw-bold text-white"><%= order.fullname %></div>
+                                    <div class="text-white-50 small"><i class="bi bi-telephone me-1"></i><%= order.phone %></div>
+                                </td>
+                                <td>
+                                    <div class="order-items-list" style="max-height: 100px; overflow-y: auto;">
+                                        <% order.items.forEach(item => { %>
+                                            <div class="small text-white-50">
+                                                <span class="text-warning fw-bold"><%= item.quantity %>x</span> <%= item.product_name %>
+                                                <span class="text-muted">(<%= parseFloat(item.price).toLocaleString('vi-VN') %>đ)</span>
+                                            </div>
+                                        <% }) %>
+                                    </div>
+                                    <% if(order.note) { %>
+                                        <div class="small text-info fst-italic mt-1"><i class="bi bi-chat-left-text me-1"></i>"<%= order.note %>"</div>
+                                    <% } %>
+                                </td>
+                                <td class="fw-bold text-warning fs-6">
+                                    <%= parseFloat(order.total_amount).toLocaleString('vi-VN') %>đ
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill bg-dark border border-secondary text-white fw-normal">
+                                        <%= order.payment_method === 'qr' ? 'Chuyển khoản QR' : 'Tiền mặt (COD)' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <select class="form-select form-select-sm status-select text-white font-weight-bold rounded-pill" 
+                                            style="width: 140px; background-color: #212529; border-color: #495057;"
+                                            onchange="updateOrderStatus('<%= order.id %>', this.value)">
+                                        <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>🟡 Đang chờ</option>
+                                        <option value="confirmed" <%= order.status === 'confirmed' ? 'selected' : '' %>>🔵 Đã xác nhận</option>
+                                        <option value="completed" <%= order.status === 'completed' ? 'selected' : '' %>>🟢 Hoàn thành</option>
+                                        <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>🔴 Đã hủy</option>
+                                    </select>
+                                </td>
+                                <td class="px-4 text-end">
+                                    <span class="small text-white-50"><%= new Date(order.created_at).toLocaleDateString('vi-VN') %></span>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-white-50">
+                                <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                                Chưa có đơn hàng nào được đặt.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+async function updateOrderStatus(orderId, newStatus) {
+    try {
+        const response = await fetch('/admin/orders/update-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: orderId, status: newStatus })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#181310',
+                color: '#fff'
+            });
+            Toast.fire({ icon: 'success', title: 'Đã cập nhật trạng thái đơn hàng!' });
+        } else {
+            alert('Cập nhật thất bại!');
+        }
+    } catch (error) {
+        console.error('Lỗi:', error);
+    }
+}
+</script>
+
+<style>
+    .font-serif { font-family: 'Playfair Display', Georgia, serif; font-style: italic; }
+    .status-select:focus { border-color: #ffc107 !important; box-shadow: none !important; }
+</style>

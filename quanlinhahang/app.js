@@ -372,6 +372,40 @@ app.post('/thanh-toan', async (req, res) => {
     }
 });
 
+app.get('/admin/orders', async (req, res) => {
+    try {
+        const [orders] = await db.query("SELECT * FROM orders ORDER BY created_at DESC");
+        
+        const [orderDetails] = await db.query("SELECT * FROM order_details");
+
+        const fullOrders = orders.map(order => {
+            return {
+                ...order,
+                items: orderDetails.filter(detail => detail.order_id === order.id)
+            };
+        });
+
+        res.render('admin/orders', { 
+            orders: fullOrders,
+            title: 'Quản Lý Đơn Hàng' 
+        });
+    } catch (error) {
+        console.error("Lỗi lấy danh sách đơn hàng: ", error);
+        res.status(500).send("Lỗi hệ thống: Không thể tải danh sách đơn hàng!");
+    }
+});
+
+app.post('/admin/orders/update-status', async (req, res) => {
+    try {
+        const { orderId, status } = req.body;
+        await db.query("UPDATE orders SET status = ? WHERE id = ?", [status, orderId]);
+        res.json({ success: true });
+    } catch (error) {
+        console.error("Lỗi cập nhật trạng thái đơn hàng: ", error);
+        res.status(500).json({ success: false, message: "Cập nhật thất bại!" });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server đang chạy tại: http://localhost:${PORT}`);
 });
