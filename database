@@ -80,6 +80,39 @@ CREATE TABLE order_details (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
+-- qli dat ban
+CREATE TABLE IF NOT EXISTS reservations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  date VARCHAR(50) NOT NULL,
+  time VARCHAR(50) NOT NULL,
+  guests INT NOT NULL,
+  notes TEXT,
+  status VARCHAR(50) DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- bảng admin đầy đủ
+CREATE TABLE IF NOT EXISTS admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('customer', 'admin') DEFAULT 'customer',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Thêm tài khoản admin với mật khẩu đã mã hóa cho 'hellohi'
+-- Chuỗi hash dưới đây tương ứng với mật khẩu 'hellohi'
+INSERT INTO admins (fullname, phone, password, role) 
+VALUES (
+    'Quản Trị Viên',
+    '0987654321', 
+    '$2b$10$uxlA7U8zPm6tE5D7iz0myuNnvFEV2ckZyo5eVSwy.1akvYdjW.9LS', -- Chuỗi hash của 'hellohi'
+    'admin'
+);
+
 INSERT INTO categories (id, name, slug) VALUES 
 (1, 'CHEF\'S RECOMMENDATION', 'chefs-recommendation'),
 (2, 'KABUBI SERIES', 'kabubi-series'),
