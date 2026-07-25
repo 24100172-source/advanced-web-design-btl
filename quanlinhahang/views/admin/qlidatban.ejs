@@ -1,0 +1,116 @@
+<%- include('../partials/header') %>
+<%- include('../partials/adminNavbar') %> <!-- Dùng Navbar dành riêng cho Admin -->
+
+<main class="container my-5" style="min-height: 80vh;">
+  
+  <div class="row">
+    <div class="col-12">
+      
+      <!-- Card bọc toàn bộ nội dung quản lý đặt bàn -->
+      <div class="card rounded-4 shadow-lg border-0 p-4 p-md-5" style="background-color: #161920; border: 1px solid #2a2c35 !important;">
+        
+        <!-- Tiêu đề & Bộ lọc ngày -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom border-secondary">
+          <div>
+            <span class="text-warning text-uppercase small tracking-wider" style="letter-spacing: 2px;">Hệ Thống Quản Trị</span>
+            <h2 class="text-white fw-bold mb-0">Quản Lý Đặt Bàn</h2>
+          </div>
+          
+          <!-- Form lọc theo ngày -->
+          <form action="/admin/reservations" method="GET" class="filter-form d-flex gap-2 align-items-center">
+            <input type="date" name="date" value="<%= locals.filterDate || '' %>" class="form-control bg-dark text-white border-secondary">
+            <button type="submit" class="btn btn-warning fw-bold text-dark px-3">
+              <i class="bi bi-filter me-1"></i> Lọc
+            </button>
+            <% if (locals.filterDate) { %>
+              <a href="/admin/reservations" class="btn btn-outline-light btn-sm">Tất cả</a>
+            <% } %>
+          </form>
+        </div>
+
+        <!-- Bảng hiển thị danh sách đặt bàn -->
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0" style="background-color: transparent;">
+            <thead>
+              <tr class="text-secondary text-uppercase fs-7" style="font-size: 0.85rem; border-bottom: 2px solid #2a2c35;">
+                <th class="py-3">ID</th>
+                <th class="py-3">Khách hàng</th>
+                <th class="py-3">Số điện thoại</th>
+                <th class="py-3">Thời gian</th>
+                <th class="py-3">Số khách</th>
+                <th class="py-3">Ghi chú</th>
+                <th class="py-3">Trạng thái</th>
+                <th class="py-3 text-center">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (locals.reservations && reservations.length > 0) { %>
+                <% reservations.forEach(item => { %>
+                  <tr style="border-bottom: 1px solid #222630;">
+                    <td class="fw-bold text-warning">#<%= item.id %></td>
+                    <td class="fw-semibold text-white"><%= item.name %></td>
+                    <td class="text-white-50"><%= item.phone %></td>
+                    <td class="text-white">
+                      <i class="bi bi-clock text-warning me-1"></i> <%= item.date %> <span class="text-white-50">(<%= item.time %>)</span>
+                    </td>
+                    <td>
+                      <span class="badge bg-secondary bg-opacity-25 text-warning border border-warning border-opacity-25 px-2 py-1">
+                        <%= item.guests %> khách
+                      </span>
+                    </td>
+                    <td class="text-white-50 small" style="max-width: 200px;"><%= item.notes || 'Không có' %></td>
+                    <td>
+                      <% if (item.status === 'confirmed') { %>
+                        <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-3 py-2">Đã xác nhận</span>
+                      <% } else if (item.status === 'cancelled') { %>
+                        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 px-3 py-2">Đã hủy</span>
+                      <% } else { %>
+                        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 px-3 py-2">Chờ xử lý</span>
+                      <% } %>
+                    </td>
+                    <td class="text-center">
+                      <div class="d-flex justify-content-center gap-1">
+                        <!-- Nút Xác nhận -->
+                        <form action="/admin/reservations/update/<%= item.id %>" method="POST" class="d-inline">
+                          <input type="hidden" name="status" value="confirmed">
+                          <button type="submit" class="btn btn-sm btn-success text-white shadow-sm" title="Xác nhận đơn">
+                            <i class="bi bi-check-lg"></i>
+                          </button>
+                        </form>
+
+                        <!-- Nút Hủy -->
+                        <form action="/admin/reservations/update/<%= item.id %>" method="POST" class="d-inline">
+                          <input type="hidden" name="status" value="cancelled">
+                          <button type="submit" class="btn btn-sm btn-warning text-dark shadow-sm" title="Hủy đơn">
+                            <i class="bi bi-slash-circle"></i>
+                          </button>
+                        </form>
+
+                        <!-- Nút Xóa -->
+                        <a href="/admin/reservations/delete/<%= item.id %>" class="btn btn-sm btn-danger text-white shadow-sm" onclick="return confirm('Bạn có chắc muốn xóa vĩnh viễn lịch đặt này?');" title="Xóa lịch">
+                          <i class="bi bi-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="8" class="text-center text-white-50 py-5">
+                    <i class="bi bi-inbox fs-1 d-block mb-2 text-warning"></i>
+                    Chưa có lịch đặt bàn nào trong hệ thống.
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<%- include('../partials/footer') %>
