@@ -39,6 +39,7 @@ app.use((req, res, next) => {
 const indexRoutes = require('./routes/index');
 const authRoutes = require('./routes/auth');
 const cartRoutes = require('./routes/cart');
+const adminReservationRoutes = require('./routes/adminReservation');
 
 app.use('/', indexRoutes);
 app.use('/auth', authRoutes); // Tự động thêm tiền tố /auth vào các đường dẫn auth
