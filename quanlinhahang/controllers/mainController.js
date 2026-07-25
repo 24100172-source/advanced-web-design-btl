@@ -24,22 +24,30 @@ exports.getMenu = async (req, res) => {
         
         const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
         
-        let productsQuery = "SELECT * FROM products WHERE status = 1";
+        // Sử dụng JOIN để kết nối bảng products (p) và categories (c)
+        let productsQuery = `
+            SELECT p.* 
+            FROM products p 
+            JOIN categories c ON p.category_id = c.id 
+            WHERE p.status = 1
+        `;
         let queryParams = [];
 
+        // Lọc theo cột 'slug' của bảng categories (c.slug)
         if (categorySlug) {
-            productsQuery += " AND category_slug = ?";
+            productsQuery += " AND c.slug = ?";
             queryParams.push(categorySlug);
         }
 
+        // Sắp xếp (nhớ thêm tiền tố p. để tránh trùng lặp cột id giữa 2 bảng)
         if (sortOption === 'price_asc') {
-            productsQuery += " ORDER BY price ASC"; 
+            productsQuery += " ORDER BY p.price ASC"; 
         } else if (sortOption === 'price_desc') {
-            productsQuery += " ORDER BY price DESC"; 
+            productsQuery += " ORDER BY p.price DESC"; 
         } else if (sortOption === 'newest') {
-            productsQuery += " ORDER BY id DESC"; 
+            productsQuery += " ORDER BY p.id DESC"; 
         } else {
-            productsQuery += " ORDER BY id DESC"; 
+            productsQuery += " ORDER BY p.id DESC"; 
         }
 
         const [products] = await db.query(productsQuery, queryParams);
