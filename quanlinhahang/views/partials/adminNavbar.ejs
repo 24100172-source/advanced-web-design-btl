@@ -1,0 +1,51 @@
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #161920; border-bottom: 1px solid #2a2c35;">
+  <div class="container">
+    <!-- Logo / Brand -->
+    <a class="navbar-brand fw-bold font-serif d-flex align-items-center gap-2" href="/admin/reservations">
+      <img src="/images/logo.png" alt="Logo" style="height: 35px; width: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #ff4a5a;" onerror="this.src='/images/default-food.jpg'">
+      <span class="text-warning">Grill House <small class="text-white-50 fs-7 fw-normal">Admin</small></span>
+    </a>
+
+    <!-- Nút thu gọn màn hình nhỏ -->
+    <button class="navbar-toggler border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Các liên kết điều hướng quản trị -->
+    <div class="collapse navbar-collapse" id="adminNavbarContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-2">
+        <li class="nav-item">
+          <a class="nav-link text-white hover-warning px-3 rounded-pill" href="/admin/reservations">
+            <i class="bi bi-calendar-check me-1 text-warning"></i> Quản Lý Đặt Bàn
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white hover-warning px-3 rounded-pill" href="/admin/dishes">
+            <i class="bi bi-egg-fried me-1 text-warning"></i> Quản Lý Món Ăn
+          </a>
+        </li>
+      </ul>
+
+      <!-- Thông tin Admin & Nút Đăng xuất -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2 bg-dark px-3 py-1.5 rounded-pill border border-secondary">
+          <i class="bi bi-person-circle text-warning"></i>
+          <span class="text-white-50 small">
+            Xin chào, <strong class="text-white"><%= locals.user ? user.fullname : 'Admin' %></strong>
+          </span>
+        </div>
+        
+        <a href="/admin/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" title="Đăng xuất tài khoản">
+          <i class="bi bi-box-arrow-right me-1"></i> Đăng xuất
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .hover-warning:hover {
+    color: #ffc107 !important;
+    background-color: rgba(255, 193, 7, 0.1);
+  }
+</style>
