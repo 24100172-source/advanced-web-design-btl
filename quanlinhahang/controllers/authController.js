@@ -94,3 +94,65 @@ exports.logout = (req, res) => {
         res.redirect('/');
     });
 };
+
+
+// ================= PHẦN DÀNH CHO ADMIN  =================
+
+// 6. Hiển thị trang đăng nhập riêng cho Admin
+exports.getAdminLogin = (req, res) => {
+    if (req.session && req.session.user && req.session.user.role === 'admin') {
+        return res.redirect('/admin/reservations');
+    }
+    res.render('admin/login', { error: null });
+};
+
+// 7. Xử lý đăng nhập Admin (Dùng mật khẩu thô)
+exports.postAdminLogin = async (req, res) => {
+    try {
+        const { phone, password } = req.body;
+
+        // Truy vấn từ bảng admins
+        const [users] = await db.query('SELECT * FROM admins WHERE phone = ?', [phone]);
+
+        if (users.length === 0) {
+            return res.render('admin/login', { error: 'Số điện thoại hoặc mật khẩu không chính xác!' });
+        }
+
+        const user = users[0];
+
+        // So sánh mật khẩu thô người dùng gõ với chuỗi hash trong Database
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.render('admin/login', { error: 'Số điện thoại hoặc mật khẩu không chính xác!' });
+        }
+
+        if (user.role !== 'admin') {
+            return res.render('admin/login', { error: 'Bạn không có quyền truy cập trang quản trị!' });
+        }
+
+        // Lưu session
+        req.session.user = {
+            id: user.id,
+            fullname: user.fullname,
+            phone: user.phone,
+            role: user.role
+        };
+
+        req.session.save((err) => {
+            if (err) console.error(err);
+            res.redirect('/admin/reservations');
+        });
+
+    } catch (err) {
+        console.error("Lỗi đăng nhập admin:", err);
+        res.render('admin/login', { error: 'Có lỗi xảy ra, vui lòng thử lại sau.' });
+    }
+};
+
+// 8. Đăng xuất Admin
+exports.adminLogout = (req, res) => {
+    req.session.destroy((err) => {
+        if (err) console.error("Lỗi khi đăng xuất:", err);
+        res.redirect('/admin/login');
+    });
+};
