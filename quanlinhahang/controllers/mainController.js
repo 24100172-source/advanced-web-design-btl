@@ -207,3 +207,20 @@ exports.postLienHe = (req, res) => {
         `);
     }
 };
+
+// 8. XỬ LÝ QUẢN LÝ LIÊN HỆ
+exports.getAdminContacts = async (req, res) => {
+    try {
+        const [contacts] = await db.query("SELECT * FROM contacts ORDER BY id DESC");
+        res.render('admin/contacts', { 
+            contacts: contacts,
+            title: 'Quản Lý Liên Hệ' 
+        });
+    } catch (error) {
+        console.error("Lỗi lấy danh sách liên hệ: ", error);
+        res.render('admin/contacts', { 
+            contacts: [],
+            title: 'Quản Lý Liên Hệ' 
+        });
+    }
+};
