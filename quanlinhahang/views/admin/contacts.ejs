@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container my-5 py-4" style="min-height: 80vh;">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+        <div>
+            <h2 class="fw-bold text-white font-serif mb-1">Quản Lý Liên Hệ</h2>
+            <p class="text-white-50 mb-0 small">Danh sách phản hồi và tin nhắn gửi từ khách hàng</p>
+        </div>
+        <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill fw-bold">
+            Tin nhắn góp ý
+        </span>
+    </div>
+
+    <div class="card border-0 rounded-4 overflow-hidden shadow-lg" style="background: #181310; border: 1px solid #362e29 !important;">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead style="background-color: #212529;">
+                    <tr class="text-warning text-uppercase small" style="letter-spacing: 1px;">
+                        <th class="py-3 px-4">STT</th>
+                        <th class="py-3">Họ & Tên</th>
+                        <th class="py-3">Thông Tin Liên Hệ</th>
+                        <th class="py-3">Nội Dung Tin Nhắn</th>
+                        <th class="py-3 px-4 text-end">Ngày Gửi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (typeof contacts !== 'undefined' && contacts.length > 0) { %>
+                        <% contacts.forEach((item, index) => { %>
+                            <tr class="border-bottom" style="border-color: #2b2420 !important;">
+                                <td class="px-4 fw-bold text-warning">#<%= index + 1 %></td>
+                                <td class="fw-bold text-white"><%= item.fullname || item.name || 'Khách hàng' %></td>
+                                <td>
+                                    <div class="text-white small"><i class="bi bi-envelope me-1 text-warning"></i><%= item.email || 'Chưa có email' %></div>
+                                    <div class="text-white-50 small"><i class="bi bi-telephone me-1"></i><%= item.phone || 'Chưa có SĐT' %></div>
+                                </td>
+                                <td>
+                                    <div class="text-white-50 small" style="max-width: 350px;">
+                                        <%= item.message || item.noi_dung || 'Không có nội dung' %>
+                                    </div>
+                                </td>
+                                <td class="px-4 text-end small text-white-50">
+                                    <%= item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : 'Mới đây' %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-white-50">
+                                <i class="bi bi-chat-square-dots fs-1 d-block mb-2 text-secondary"></i>
+                                Chưa có tin nhắn liên hệ nào từ khách hàng.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<style>
+    .font-serif { font-family: 'Playfair Display', Georgia, serif; font-style: italic; }
+</style>
