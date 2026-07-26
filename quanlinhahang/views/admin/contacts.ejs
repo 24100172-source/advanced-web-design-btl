@@ -19,8 +19,8 @@
                     <tr class="text-warning text-uppercase small" style="letter-spacing: 1px;">
                         <th class="py-3 px-4">STT</th>
                         <th class="py-3">Họ & Tên</th>
-                        <th class="py-3">Thông Tin Liên Hệ</th>
-                        <th class="py-3">Nội Dung Tin Nhắn</th>
+                        <th class="py-3">Số Điện Thoại</th>
+                        <th class="py-3">Tiêu Đề & Nội Dung Tin Nhắn</th>
                         <th class="py-3 px-4 text-end">Ngày Gửi</th>
                     </tr>
                 </thead>
@@ -29,16 +29,30 @@
                         <% contacts.forEach((item, index) => { %>
                             <tr class="border-bottom" style="border-color: #2b2420 !important;">
                                 <td class="px-4 fw-bold text-warning">#<%= index + 1 %></td>
-                                <td class="fw-bold text-white"><%= item.fullname || item.name || 'Khách hàng' %></td>
-                                <td>
-                                    <div class="text-white small"><i class="bi bi-envelope me-1 text-warning"></i><%= item.email || 'Chưa có email' %></div>
-                                    <div class="text-white-50 small"><i class="bi bi-telephone me-1"></i><%= item.phone || 'Chưa có SĐT' %></div>
+                                
+                                <!-- Hứng name của nhóm trưởng -->
+                                <td class="fw-bold text-white">
+                                    <%= item.name || item.fullname || 'Khách hàng' %>
                                 </td>
+                                
+                                <!-- Hứng phone của nhóm trưởng -->
                                 <td>
-                                    <div class="text-white-50 small" style="max-width: 350px;">
-                                        <%= item.message || item.noi_dung || 'Không có nội dung' %>
+                                    <div class="text-white small">
+                                        <i class="bi bi-telephone-fill me-1 text-warning"></i>
+                                        <%= item.phone || 'Chưa có SĐT' %>
                                     </div>
                                 </td>
+                                
+                                <!-- Hứng subject & message của nhóm trưởng -->
+                                <td>
+                                    <% if (item.subject) { %>
+                                        <div class="text-warning small fw-bold mb-1">[<%= item.subject %>]</div>
+                                    <% } %>
+                                    <div class="text-white-50 small" style="max-width: 350px;">
+                                        <%= item.message || 'Không có nội dung' %>
+                                    </div>
+                                </td>
+                                
                                 <td class="px-4 text-end small text-white-50">
                                     <%= item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : 'Mới đây' %>
                                 </td>
