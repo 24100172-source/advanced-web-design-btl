@@ -23,4 +23,7 @@ router.get('/chinh-sach-thanh-vien', mainController.getPolicy);
 router.get('/bao-mat', mainController.getPrivacy);
 router.get('/gioi-thieu', mainController.getAbout);
 
+// Route quản lý liên hệ (Admin)
+router.get('/admin/contacts', mainController.getAdminContacts);
+
 module.exports = router;
