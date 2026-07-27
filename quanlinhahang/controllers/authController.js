@@ -69,7 +69,7 @@ exports.postRegister = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Lưu vào Database 
+        // Lưu vào Database (Bỏ cột username)
         await db.query(
             "INSERT INTO users (fullname, phone, email, password) VALUES (?, ?, ?, ?)",
             [fullname, phone, email || null, hashedPassword]
@@ -120,7 +120,7 @@ exports.postAdminLogin = async (req, res) => {
 
         const user = users[0];
 
-        // So sánh mật khẩu người dùng gõ với chuỗi hash trong Database
+        // So sánh mật khẩu thô người dùng gõ với chuỗi hash trong Database
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.render('admin/login', { error: 'Số điện thoại hoặc mật khẩu không chính xác!' });

@@ -1,0 +1,85 @@
+<%- include('../partials/header') %>
+<%- include('../partials/adminNavbar') %>
+
+<main class="container my-5" style="min-height: 80vh;">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      
+      <div class="card rounded-4 shadow-lg border-0 p-4 p-md-5" style="background-color: #161920; border: 1px solid #2a2c35 !important;">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+          <div>
+            <span class="text-info text-uppercase small tracking-wider" style="letter-spacing: 2px;">Chỉnh Sửa</span>
+            <h2 class="text-white fw-bold mb-0">Món Ăn #<%= dish.id %></h2>
+          </div>
+          <a href="/admin/dishes" class="btn btn-outline-light">
+            <i class="bi bi-arrow-left me-1"></i> Trở về
+          </a>
+        </div>
+
+        <!-- Form gửi dữ liệu lên POST /admin/dishes/edit/:id -->
+        <form action="/admin/dishes/edit/<%= dish.id %>" method="POST" enctype="multipart/form-data">
+          <div class="row g-4">
+            
+            <div class="col-md-12">
+              <label for="name" class="form-label text-white-50 fw-bold">Tên món ăn <span class="text-danger">*</span></label>
+              <!-- Điền value cũ -->
+              <input type="text" class="form-control bg-dark text-white border-secondary" id="name" name="name" value="<%= dish.name %>" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="category_id" class="form-label text-white-50 fw-bold">Danh mục <span class="text-danger">*</span></label>
+              <select class="form-select bg-dark text-white border-secondary" id="category_id" name="category_id" required>
+                <% categories.forEach(category => { %>
+                  <!-- Kiểm tra xem id danh mục nào khớp với món ăn thì thêm chữ selected -->
+                  <option value="<%= category.id %>" <%= dish.category_id === category.id ? 'selected' : '' %>>
+                    <%= category.name %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="price" class="form-label text-white-50 fw-bold">Giá tiền (VNĐ) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control bg-dark text-white border-secondary" id="price" name="price" value="<%= dish.price %>" required min="0">
+            </div>
+
+            <div class="col-md-12">
+              <label for="image" class="form-label text-white-50 fw-bold">Hình ảnh (Để trống nếu không muốn đổi)</label>
+              <input type="file" class="form-control bg-dark text-white border-secondary" id="image" name="image" accept="image/*">
+              <% if (dish.image_url) { %>
+                <div class="mt-2 text-white-50 small">
+                  Ảnh hiện tại: <span class="text-info"><%= dish.image_url %></span>
+                </div>
+              <% } %>
+            </div>
+
+            <div class="col-md-6">
+              <label for="status" class="form-label text-white-50 fw-bold">Trạng thái</label>
+              <select class="form-select bg-dark text-white border-secondary" id="status" name="status">
+                <option value="1" <%= dish.status === 1 ? 'selected' : '' %>>Đang bán</option>
+                <option value="0" <%= dish.status === 0 ? 'selected' : '' %>>Tạm ngưng</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 d-flex align-items-end pb-2">
+              <div class="form-check form-switch mb-0">
+                <!-- Thuộc tính checked dựa vào db -->
+                <input class="form-check-input" type="checkbox" role="switch" id="is_bestseller" name="is_bestseller" <%= dish.is_bestseller === 1 ? 'checked' : '' %>>
+                <label class="form-check-label text-warning fw-bold ms-2" for="is_bestseller">Là món bán chạy</label>
+              </div>
+            </div>
+
+            <div class="col-12 mt-5 text-end">
+              <button type="submit" class="btn btn-info fw-bold text-dark px-5 py-2 shadow-sm">
+                <i class="bi bi-save me-1"></i> Cập nhật món ăn
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,89 @@
+<%- include('../partials/header') %>
+<%- include('../partials/adminNavbar') %>
+
+<main class="container my-5" style="min-height: 80vh;">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      
+      <!-- Card Form -->
+      <div class="card rounded-4 shadow-lg border-0 p-4 p-md-5" style="background-color: #161920; border: 1px solid #2a2c35 !important;">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+          <div>
+            <span class="text-warning text-uppercase small tracking-wider" style="letter-spacing: 2px;">Thêm Mới</span>
+            <h2 class="text-white fw-bold mb-0">Món Ăn (Product)</h2>
+          </div>
+          <!-- Nút quay lại -->
+          <a href="/admin/dishes" class="btn btn-outline-light">
+            <i class="bi bi-arrow-left me-1"></i> Trở về
+          </a>
+        </div>
+
+        <!-- Form gửi dữ liệu lên POST /admin/dishes/add -->
+        <form action="/admin/dishes/add" method="POST" enctype="multipart/form-data">
+          <div class="row g-4">
+            
+            <!-- Tên món ăn -->
+            <div class="col-md-12">
+              <label for="name" class="form-label text-white-50 fw-bold">Tên món ăn <span class="text-danger">*</span></label>
+              <input type="text" class="form-control bg-dark text-white border-secondary" id="name" name="name" required placeholder="Nhập tên món ăn...">
+            </div>
+
+            <!-- Danh mục (Dropdown đổ từ Database) -->
+            <div class="col-md-6">
+              <label for="category_id" class="form-label text-white-50 fw-bold">Danh mục <span class="text-danger">*</span></label>
+              <select class="form-select bg-dark text-white border-secondary" id="category_id" name="category_id" required>
+                <option value="" disabled selected>-- Chọn danh mục --</option>
+                <% if (locals.categories) { %>
+                  <% categories.forEach(category => { %>
+                    <option value="<%= category.id %>"><%= category.name %></option>
+                  <% }) %>
+                <% } %>
+              </select>
+            </div>
+
+            <!-- Cột Upload Ảnh -->
+            <div class="col-md-12">
+                <label for="image" class="form-label text-white-50 fw-bold">Hình ảnh món ăn</label>
+                <input type="file" class="form-control bg-dark text-white border-secondary" id="image" name="image" accept="image/*">
+            </div>
+
+            <!-- Giá tiền -->
+            <div class="col-md-6">
+              <label for="price" class="form-label text-white-50 fw-bold">Giá tiền (VNĐ) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control bg-dark text-white border-secondary" id="price" name="price" required min="0" placeholder="VD: 150000">
+            </div>
+
+            <!-- Trạng thái -->
+            <div class="col-md-6">
+              <label for="status" class="form-label text-white-50 fw-bold">Trạng thái</label>
+              <select class="form-select bg-dark text-white border-secondary" id="status" name="status">
+                <option value="1" selected>Đang bán</option>
+                <option value="0">Tạm ngưng</option>
+              </select>
+            </div>
+
+            <!-- Nút bật/tắt Bestseller -->
+            <div class="col-md-6 d-flex align-items-end pb-2">
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="is_bestseller" name="is_bestseller">
+                <label class="form-check-label text-warning fw-bold ms-2" for="is_bestseller">Là món bán chạy (Bestseller)</label>
+              </div>
+            </div>
+
+            <!-- Nút Lưu -->
+            <div class="col-12 mt-5 text-end">
+              <button type="submit" class="btn btn-warning fw-bold text-dark px-5 py-2 shadow-sm">
+                <i class="bi bi-save me-1"></i> Lưu món ăn
+              </button>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

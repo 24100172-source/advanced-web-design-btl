@@ -43,7 +43,7 @@ const cartRoutes = require('./routes/cart');
 const adminReservationRoutes = require('./routes/adminReservation');
 
 app.use('/', indexRoutes);
-app.use('/auth', authRoutes); 
+app.use('/auth', authRoutes); // Tự động thêm tiền tố /auth vào các đường dẫn auth
 app.use('/', cartRoutes);
 app.use('/', adminReservationRoutes);
 
