@@ -80,6 +80,19 @@ CREATE TABLE order_details (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
+-- Bảng Liên hệ từ khách hàng (Contacts)
+CREATE TABLE contacts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    email VARCHAR(100) DEFAULT NULL,
+    subject VARCHAR(255) DEFAULT NULL,
+    message TEXT NOT NULL,
+    admin_reply TEXT DEFAULT NULL,
+    status ENUM('unread', 'read') DEFAULT 'unread',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- qli dat ban
 CREATE TABLE IF NOT EXISTS reservations (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -291,3 +304,8 @@ INSERT INTO articles (title, tag, image_url, summary, content) VALUES
     </ul>
     <p>Nếu bạn muốn tự tay nướng những miếng thịt tuyệt hảo này, đừng ngại yêu cầu nhân viên của Grill House hỗ trợ canh nhiệt độ và hướng dẫn trực tiếp tại bàn nhé. Chúc bạn có một bữa tiệc nướng thăng hoa!</p>'
 );
+
+INSERT INTO contacts (name, phone, email, subject, message, admin_reply, status) VALUES
+('Trần Thị Mỹ Linh', '0987654321', 'linh.tran@gmail.com', 'Khen ngợi dịch vụ', 'Đồ ăn hôm qua rất tươi ngon, nhân viên phục vụ chu đáo!', 'Cảm ơn chị Linh đã ủng hộ Grill House. Hẹn gặp lại chị vào lần tới ạ!', 'read'),
+('Nguyễn Văn Hoàng', '0912345678', 'hoang.nguyen@yahoo.com', 'Hỏi về giá sản phẩm', 'Nhà hàng cho mình hỏi giá các món ăn và khuyến mãi tính thế nào ạ?', NULL, 'unread'),
+('Trần Hoàng Long', '0877564144', 'long.tran@congty.vn', 'Hợp tác', 'Xin chào, tôi muốn hợp tác cùng thương hiệu của bạn để quảng bá sản phẩm.', NULL, 'unread');
