@@ -1,43 +1,85 @@
+const db = require('../config/db');
 const bcrypt = require('bcrypt'); // Thư viện mã hóa mật khẩu
-const User = require('../models/User');   
-const Admin = require('../models/Admin'); 
 
-// 1. HIỂN THỊ TRANG ĐĂNG NHẬP
+// 1. HIỂN THỊ TRANG ĐĂNG NHẬP CHUNG
 exports.getLogin = (req, res) => {
+    // Nếu đã đăng nhập admin rồi thì chuyển thẳng vào trang quản trị
+    if (req.session && req.session.admin) {
+        return res.redirect('/admin/reservations');
+    }
+    // Nếu khách đã đăng nhập rồi thì về trang chủ
+    if (req.session && req.session.user) {
+        return res.redirect('/');
+    }
     res.render('auth/login', { hideSearch: true, error: null }); 
 };
 
-// 2. XỬ LÝ ĐĂNG NHẬP 
+// 2. XỬ LÝ ĐĂNG NHẬP CHUNG (Cho cả Khách hàng và Admin)
 exports.postLogin = async (req, res) => {
     try {
-        const phone = req.body.phone || req.body.username; 
+        const phone = req.body.username || req.body.phone; 
         const password = req.body.password;
 
-        // B1: Gọi Model tìm user trong Database
-        const user = await User.findByPhone(phone);
-
-        if (!user) {
-            return res.render('auth/login', { hideSearch: true, error: 'Số điện thoại chưa được đăng ký!' });
+        if (!phone || !password) {
+            return res.render('auth/login', { hideSearch: true, error: 'Vui lòng nhập đầy đủ thông tin!' });
         }
 
-        // B2: So sánh mật khẩu
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) {
-            return res.render('auth/login', { hideSearch: true, error: 'Sai mật khẩu!' });
+        // BƯỚC 1: Kiểm tra xem có phải tài khoản trong bảng 'admins' trước không
+        const [admins] = await db.query("SELECT * FROM admins WHERE phone = ?", [phone]);
+
+        if (admins.length > 0) {
+            const admin = admins[0];
+            const matchAdmin = await bcrypt.compare(password, admin.password);
+            
+            if (matchAdmin) {
+                if (admin.role !== 'admin') {
+                    return res.render('auth/login', { hideSearch: true, error: 'Bạn không có quyền truy cập trang quản trị!' });
+                }
+
+                // Lưu session cho Admin
+                req.session.admin = {
+                    id: admin.id,
+                    fullname: admin.fullname,
+                    phone: admin.phone,
+                    role: admin.role
+                };
+
+                return req.session.save((err) => {
+                    if (err) console.error(err);
+                    res.redirect('/admin/reservations');
+                });
+            }
         }
 
-        // B3: Lưu session
-        req.session.user = {
-            id: user.id,
-            fullname: user.fullname,
-            phone: user.phone,
-            role: user.role
-        };
+        // BƯỚC 2: Nếu không phải Admin, kiểm tra tiếp bảng 'users' (Khách hàng)
+        const [users] = await db.query("SELECT * FROM users WHERE phone = ?", [phone]);
 
-        res.redirect('/');
+        if (users.length > 0) {
+            const user = users[0];
+            const matchUser = await bcrypt.compare(password, user.password);
+
+            if (matchUser) {
+                // Lưu session cho User thường
+                req.session.user = {
+                    id: user.id,
+                    fullname: user.fullname,
+                    phone: user.phone,
+                    role: user.role
+                };
+
+                return req.session.save((err) => {
+                    if (err) console.error(err);
+                    res.redirect('/');
+                });
+            }
+        }
+
+        // Nếu không tìm thấy hoặc sai mật khẩu ở cả 2 bảng
+        return res.render('auth/login', { hideSearch: true, error: 'Số điện thoại hoặc mật khẩu không chính xác!' });
+
     } catch (error) {
         console.error("Lỗi đăng nhập:", error);
-        res.render('auth/login', { hideSearch: true, error: 'Lỗi máy chủ!' });
+        res.render('auth/login', { hideSearch: true, error: 'Lỗi máy chủ, vui lòng thử lại sau!' });
     }
 };
 
@@ -55,18 +97,19 @@ exports.postRegister = async (req, res) => {
             return res.render('auth/register', { hideSearch: true, error: 'Mật khẩu xác nhận không khớp!' });
         }
 
-        // Gọi Model kiểm tra số điện thoại tồn tại
-        const existingUser = await User.findByPhone(phone);
+        const [existingUser] = await db.query("SELECT * FROM users WHERE phone = ?", [phone]);
 
-        if (existingUser) {
+        if (existingUser.length > 0) {
             return res.render('auth/register', { hideSearch: true, error: 'Số điện thoại này đã được đăng ký!' });
         }
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Gọi Model lưu user mới
-        await User.create({ fullname, phone, email, hashedPassword });
+        await db.query(
+            "INSERT INTO users (fullname, phone, email, password) VALUES (?, ?, ?, ?)",
+            [fullname, phone, email || null, hashedPassword]
+        );
 
         res.send(`
             <script>
@@ -80,68 +123,15 @@ exports.postRegister = async (req, res) => {
     }
 };
 
-// 5. XỬ LÝ ĐĂNG XUẤT
+// 5. XỬ LÝ ĐĂNG XUẤT CHUNG (Cho cả User và Admin)
 exports.logout = (req, res) => {
     req.session.destroy((err) => {
         if(err) console.log(err);
-        res.redirect('/');
+        res.redirect('/auth/login');
     });
 };
 
-// ================= PHẦN DÀNH CHO ADMIN  =================
-
-// 6. Hiển thị trang đăng nhập riêng cho Admin
-exports.getAdminLogin = (req, res) => {
-    if (req.session && req.session.admin) {
-        return res.redirect('/admin/reservations');
-    }
-    res.render('admin/login', { error: null });
-};
-
-// 7. Xử lý đăng nhập Admin 
-exports.postAdminLogin = async (req, res) => {
-    try {
-        const { phone, password } = req.body;
-
-        // Gọi Model truy vấn từ bảng admins
-        const user = await Admin.findByPhone(phone);
-
-        if (!user) {
-            return res.render('admin/login', { error: 'Số điện thoại hoặc mật khẩu không chính xác!' });
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.render('admin/login', { error: 'Số điện thoại hoặc mật khẩu không chính xác!' });
-        }
-
-        if (user.role !== 'admin') {
-            return res.render('admin/login', { error: 'Bạn không có quyền truy cập trang quản trị!' });
-        }
-
-        req.session.admin = {
-            id: user.id,
-            fullname: user.fullname,
-            phone: user.phone,
-            role: user.role
-        };
-
-        req.session.save((err) => {
-            if (err) console.error(err);
-            res.redirect('/admin/reservations');
-        });
-
-    } catch (err) {
-        console.error("Lỗi đăng nhập admin:", err);
-        res.render('admin/login', { error: 'Có lỗi xảy ra, vui lòng thử lại sau.' });
-    }
-};
-
-// 8. Đăng xuất Admin
-exports.adminLogout = (req, res) => {
-    delete req.session.admin;
-    req.session.save((err) => {
-        if (err) console.error("Lỗi khi đăng xuất:", err);
-        res.redirect('/admin/login');
-    });
-};
+// ================= ROUTE DỰ PHÒNG CHO ADMIN (GIỮ LẠI ĐỂ TƯƠNG THÍCH) =================
+exports.getAdminLogin = exports.getLogin;
+exports.postAdminLogin = exports.postLogin;
+exports.adminLogout = exports.logout;
