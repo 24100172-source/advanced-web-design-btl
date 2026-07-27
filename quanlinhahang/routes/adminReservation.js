@@ -5,6 +5,8 @@ const authController = require('../controllers/authController');
 const dishController = require('../controllers/dishController'); 
 const adminAuth = require('../middleware/adminAuth'); 
 const upload = require('../middleware/upload');
+const orderController = require('../controllers/orderController');
+const contactController = require('../controllers/contactController');
 
 // Route Đăng nhập Admin
 router.get('/admin/login', authController.getAdminLogin);
@@ -24,11 +26,19 @@ router.get('/admin/reservations/delete/:id', adminAuth, reservationController.de
 router.get('/admin/dishes', adminAuth, dishController.getAdminDishes);
 router.get('/admin/dishes/add', adminAuth, dishController.getAddDish);
 router.post('/admin/dishes/add', adminAuth, upload.single('image'), dishController.postAddDish);
-// Xóa món ăn
 router.get('/admin/dishes/delete/:id', adminAuth, dishController.deleteDish);
-// Hiển thị form SỬA món ăn
 router.get('/admin/dishes/edit/:id', adminAuth, dishController.getEditDish);
-// Xử lý dữ liệu SỬA món ăn (có hỗ trợ upload ảnh mới)
 router.post('/admin/dishes/edit/:id', adminAuth, upload.single('image'), dishController.postEditDish);
+
+// Quản lý đơn hàng
+router.get('/admin/orders', adminAuth, orderController.getAdminOrders);
+router.post('/admin/orders/update/:id', adminAuth, orderController.updateOrderStatus);
+router.get('/admin/orders/delete/:id', adminAuth, orderController.deleteOrder);
+
+// Quản lý tin nhắn liên hệ
+router.get('/admin/contacts', adminAuth, contactController.getAdminContacts);
+router.post('/admin/contacts/reply', contactController.replyContact);
+router.post('/admin/contacts/update/:id', contactController.updateStatus);
+router.post('/admin/contacts/delete/:id', contactController.deleteContact);
 
 module.exports = router;
