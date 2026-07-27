@@ -69,7 +69,7 @@ exports.postRegister = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Lưu vào Database (Bỏ cột username)
+        // Lưu vào Database 
         await db.query(
             "INSERT INTO users (fullname, phone, email, password) VALUES (?, ?, ?, ?)",
             [fullname, phone, email || null, hashedPassword]
@@ -100,13 +100,13 @@ exports.logout = (req, res) => {
 
 // 6. Hiển thị trang đăng nhập riêng cho Admin
 exports.getAdminLogin = (req, res) => {
-    if (req.session && req.session.user && req.session.user.role === 'admin') {
+    if (req.session && req.session.admin) {
         return res.redirect('/admin/reservations');
     }
     res.render('admin/login', { error: null });
 };
 
-// 7. Xử lý đăng nhập Admin (Dùng mật khẩu thô)
+// 7. Xử lý đăng nhập Admin 
 exports.postAdminLogin = async (req, res) => {
     try {
         const { phone, password } = req.body;
@@ -120,7 +120,7 @@ exports.postAdminLogin = async (req, res) => {
 
         const user = users[0];
 
-        // So sánh mật khẩu thô người dùng gõ với chuỗi hash trong Database
+        // So sánh mật khẩu người dùng gõ với chuỗi hash trong Database
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.render('admin/login', { error: 'Số điện thoại hoặc mật khẩu không chính xác!' });
@@ -131,7 +131,7 @@ exports.postAdminLogin = async (req, res) => {
         }
 
         // Lưu session
-        req.session.user = {
+        req.session.admin = {
             id: user.id,
             fullname: user.fullname,
             phone: user.phone,
@@ -151,7 +151,8 @@ exports.postAdminLogin = async (req, res) => {
 
 // 8. Đăng xuất Admin
 exports.adminLogout = (req, res) => {
-    req.session.destroy((err) => {
+    delete req.session.admin;
+    req.session.save((err) => {
         if (err) console.error("Lỗi khi đăng xuất:", err);
         res.redirect('/admin/login');
     });
