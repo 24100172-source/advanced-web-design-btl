@@ -20,7 +20,7 @@ app.use(session({
     cookie: { maxAge: 24 * 60 * 60 * 1000 }
 }));
 
-// 3. MIDDLEWARE TOÀN CỤC (Biến giỏ hàng & User cho Navbar)
+// 3. MIDDLEWARE TOÀN CỤC (Biến giỏ hàng & User/Admin cho Navbar)
 app.use((req, res, next) => {
     // Xử lý giỏ hàng
     let totalItems = 0;
@@ -29,8 +29,9 @@ app.use((req, res, next) => {
     }
     res.locals.globalCartCount = totalItems;
 
-    // XỬ LÝ LƯU THÔNG TIN USER (DÒNG BẠN CÒN THIẾU)
+    // XỬ LÝ LƯU THÔNG TIN USER/ADMIN 
     res.locals.user = req.session.user || null; 
+    res.locals.admin = req.session.admin || null;
 
     next();
 });
@@ -42,7 +43,7 @@ const cartRoutes = require('./routes/cart');
 const adminReservationRoutes = require('./routes/adminReservation');
 
 app.use('/', indexRoutes);
-app.use('/auth', authRoutes); // Tự động thêm tiền tố /auth vào các đường dẫn auth
+app.use('/auth', authRoutes); 
 app.use('/', cartRoutes);
 app.use('/', adminReservationRoutes);
 
