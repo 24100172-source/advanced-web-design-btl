@@ -1,10 +1,14 @@
-const db = require('../config/db');
+const Category = require('../models/Category');
+const Product = require('../models/Product');
+const Article = require('../models/Article');
+const Booking = require('../models/Booking');
+const Contact = require('../models/Contact');
 
 // 1. TRANG CHỦ
 exports.getHome = async (req, res) => {
     try {
-        const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
-        const [bestSellers] = await db.query("SELECT * FROM products WHERE is_bestseller = 1 AND status = 1");
+        const categories = await Category.getAll();
+        const bestSellers = await Product.getBestSellers();
 
         res.render('home', { 
             categories: categories, 
@@ -22,35 +26,8 @@ exports.getMenu = async (req, res) => {
         const categorySlug = req.query.category;
         const sortOption = req.query.sort; 
         
-        const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
-        
-        // Sử dụng JOIN để kết nối bảng products (p) và categories (c)
-        let productsQuery = `
-            SELECT p.* 
-            FROM products p 
-            JOIN categories c ON p.category_id = c.id 
-            WHERE p.status = 1
-        `;
-        let queryParams = [];
-
-        // Lọc theo cột 'slug' của bảng categories (c.slug)
-        if (categorySlug) {
-            productsQuery += " AND c.slug = ?";
-            queryParams.push(categorySlug);
-        }
-
-        // Sắp xếp (nhớ thêm tiền tố p. để tránh trùng lặp cột id giữa 2 bảng)
-        if (sortOption === 'price_asc') {
-            productsQuery += " ORDER BY p.price ASC"; 
-        } else if (sortOption === 'price_desc') {
-            productsQuery += " ORDER BY p.price DESC"; 
-        } else if (sortOption === 'newest') {
-            productsQuery += " ORDER BY p.id DESC"; 
-        } else {
-            productsQuery += " ORDER BY p.id DESC"; 
-        }
-
-        const [products] = await db.query(productsQuery, queryParams);
+        const categories = await Category.getAll();
+        const products = await Product.getFilteredMenu(categorySlug, sortOption);
 
         res.render('menu', {
             categories,
@@ -76,9 +53,8 @@ exports.getSearch = async (req, res) => {
             return res.redirect('/thuc-don');
         }
 
-        const [categories] = await db.query("SELECT * FROM categories ORDER BY id ASC");
-        const searchQuery = "SELECT * FROM products WHERE name LIKE ? AND status = 1";
-        const [products] = await db.query(searchQuery, [`%${keyword}%`]);
+        const categories = await Category.getAll();
+        const products = await Product.searchByName(keyword);
 
         res.render('menu', { 
             categories, 
@@ -98,8 +74,8 @@ exports.getSearch = async (req, res) => {
 // 4. TRANG TIN TỨC
 exports.getNews = async (req, res) => {
     try {
-        const [rows] = await db.query("SELECT * FROM articles ORDER BY created_at DESC");
-        res.render('news', { articles: rows, hideSearch: true }); 
+        const articles = await Article.getAll();
+        res.render('news', { articles: articles, hideSearch: true }); 
     } catch (error) {
         console.error("Lỗi lấy dữ liệu tin tức: ", error);
         res.status(500).send("Lỗi Server: Không thể tải dữ liệu tin tức!");
@@ -109,13 +85,13 @@ exports.getNews = async (req, res) => {
 exports.getNewsDetail = async (req, res) => {
     try {
         const articleId = req.params.id;
-        const [rows] = await db.query("SELECT * FROM articles WHERE id = ?", [articleId]);
+        const post = await Article.findById(articleId);
 
-        if (rows.length === 0) {
+        if (!post) {
             return res.status(404).send("Không tìm thấy bài viết!");
         }
 
-        res.render('news-detail', { post: rows[0], hideSearch: true });
+        res.render('news-detail', { post: post, hideSearch: true });
     } catch (error) {
         console.error("Lỗi lấy chi tiết tin tức: ", error);
         res.status(500).send("Lỗi Server: Không thể tải chi tiết tin tức!");
@@ -136,11 +112,8 @@ exports.getDatBan = (req, res) => {
 exports.postDatBan = async (req, res) => {
     try {
         const { name, phone, date, time, guests, notes } = req.body;
-        const insertBookingQuery = `
-            INSERT INTO bookings (fullname, phone, booking_date, booking_time, guests_count, note, status)
-            VALUES (?, ?, ?, ?, ?, ?, 'pending')
-        `;
-        await db.query(insertBookingQuery, [name, phone, date, time, guests, notes || null]);
+        
+        await Booking.create({ name, phone, date, time, guests, notes });
 
         res.render('dat-ban', {
             success_msg: `Cảm ơn ${name}. Hệ thống đã ghi nhận lịch hẹn thành công. Chúng tôi sẽ gọi lại vào số ${phone} để xác nhận sớm nhất!`,
@@ -158,7 +131,7 @@ exports.postDatBan = async (req, res) => {
 // 7. XỬ LÝ LIÊN HỆ
 exports.getLienHe = async (req, res) => {
     try {
-        const [reviews] = await db.query("SELECT * FROM contacts ORDER BY created_at DESC LIMIT 6");
+        const reviews = await Contact.getLatestReviews(6);
         res.render('lien-he', { reviews: reviews, hideSearch: true }); 
     } catch (error) {
         console.error("Lỗi lấy danh sách đánh giá: ", error);
@@ -208,10 +181,10 @@ exports.postLienHe = (req, res) => {
     }
 };
 
-// 8. XỬ LÝ QUẢN LÝ LIÊN HỆ
+// 8. XỬ LÝ QUẢN LÝ LIÊN HỆ (ADMIN)
 exports.getAdminContacts = async (req, res) => {
     try {
-        const [contacts] = await db.query("SELECT * FROM contacts ORDER BY id DESC");
+        const contacts = await Contact.getAll();
         res.render('admin/contacts', { 
             contacts: contacts,
             title: 'Quản Lý Liên Hệ' 

@@ -1,25 +1,14 @@
-const db = require('../config/db');
-
+const Order = require('../models/Order'); 
 // 1. Hiển thị danh sách và Lọc theo ngày
 exports.getAdminOrders = async (req, res) => {
     try {
-        const filterDate = req.query.date; // Lấy ngày từ URL (nếu admin có chọn lọc)
-        let query = 'SELECT * FROM orders';
-        let queryParams = [];
-
-        // Nếu có chọn ngày lọc, thêm điều kiện WHERE vào câu SQL
-        if (filterDate) {
-            query += ' WHERE DATE(created_at) = ?';
-            queryParams.push(filterDate);
-        }
-
-        query += ' ORDER BY id DESC';
-
-        const [orders] = await db.execute(query, queryParams);
+        const filterDate = req.query.date; 
+        // Gọi Model lấy danh sách đơn hàng
+        const orders = await Order.getAll(filterDate);
 
         res.render('admin/orders', {
             orders: orders,
-            filterDate: filterDate // Truyền ngày ngược lại view để giữ giá trị ô input
+            filterDate: filterDate 
         });
     } catch (error) {
         console.error("Lỗi khi tải trang quản lý đơn hàng:", error);
@@ -33,10 +22,9 @@ exports.updateOrderStatus = async (req, res) => {
         const orderId = req.params.id;
         const newStatus = req.body.status; // Lấy trạng thái gửi từ Form (completed hoặc cancelled)
 
-        const query = 'UPDATE orders SET status = ? WHERE id = ?';
-        await db.execute(query, [newStatus, orderId]);
+        // Gọi Model cập nhật trạng thái đơn hàng
+        await Order.updateStatus(orderId, newStatus);
 
-        // Cập nhật xong thì tải lại trang
         res.redirect('/admin/orders');
     } catch (error) {
         console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
@@ -49,11 +37,9 @@ exports.deleteOrder = async (req, res) => {
     try {
         const orderId = req.params.id;
         
-        // Chạy lệnh xóa đơn hàng có id tương ứng trong Database
-        const query = 'DELETE FROM orders WHERE id = ?';
-        await db.execute(query, [orderId]);
+        // Gọi Model xóa đơn hàng
+        await Order.delete(orderId);
         
-        // Xóa xong thì tự động load lại trang danh sách đơn hàng
         res.redirect('/admin/orders');
     } catch (error) {
         console.error("Lỗi khi xóa đơn hàng:", error);

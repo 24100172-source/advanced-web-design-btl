@@ -1,6 +1,6 @@
-const db = require('../config/db'); // Gọi DB vào để truy vấn món ăn
+const Product = require('../models/Product'); 
+const Order = require('../models/Order');     
 
-// Hàm hỗ trợ tính tiền (chỉ dùng nội bộ trong file này)
 function calculateCartTotal(cart) {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 }
@@ -24,9 +24,10 @@ exports.addToCart = async (req, res) => {
         if (item) {
             item.quantity += 1;
         } else {
-            const [products] = await db.query("SELECT * FROM products WHERE id = ?", [productId]);
-            if (products.length > 0) {
-                const product = products[0];
+            // Gọi Model lấy thông tin món ăn theo ID
+            const product = await Product.findById(productId);
+            
+            if (product) {
                 req.session.cart.push({
                     id: product.id,
                     name: product.name,
@@ -106,18 +107,11 @@ exports.postCheckout = async (req, res) => {
 
         const totalAmount = calculateCartTotal(cart);
         
-        const [orderResult] = await db.query(
-            "INSERT INTO orders (fullname, phone, payment_method, total_amount, note) VALUES (?, ?, ?, ?, ?)",
-            [fullname, phone, payment_method, totalAmount, note || null]
+        // Gọi Model lưu đơn hàng và các mặt hàng vào database
+        await Order.create(
+            { fullname, phone, payment_method, totalAmount, note },
+            cart
         );
-        const orderId = orderResult.insertId;
-
-        for (const item of cart) {
-            await db.query(
-                "INSERT INTO order_details (order_id, product_id, price, quantity) VALUES (?, ?, ?, ?)",
-                [orderId, item.id, item.price, item.quantity]
-            );
-        }
         
         req.session.cart = []; // Xóa giỏ hàng sau khi đặt thành công
         res.json({ success: true, message: "Đặt hàng thành công!" });

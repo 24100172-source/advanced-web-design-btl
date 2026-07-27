@@ -1,79 +1,187 @@
 <%- include('../partials/header') %>
-<%- include('../partials/navbar') %>
+<%- include('../partials/adminNavbar') %>
 
-<main class="container my-5 py-4" style="min-height: 80vh;">
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
-        <div>
-            <h2 class="fw-bold text-white font-serif mb-1">Quản Lý Liên Hệ</h2>
-            <p class="text-white-50 mb-0 small">Danh sách phản hồi và tin nhắn gửi từ khách hàng</p>
+<main class="container my-5" style="min-height: 80vh;">
+  <div class="row">
+    <div class="col-12">
+      
+      <!-- Card bọc toàn bộ nội dung -->
+      <div class="card rounded-4 shadow-lg border-0 p-4 p-md-5" style="background-color: #161920; border: 1px solid #2a2c35 !important;">
+        
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom border-secondary">
+          <div>
+            <span class="text-warning text-uppercase small tracking-wider" style="letter-spacing: 2px;">Hệ Thống Quản Trị</span>
+            <h2 class="text-white fw-bold mb-0">Tin Nhắn Liên Hệ</h2>
+          </div>
         </div>
-        <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill fw-bold">
-            Tin nhắn góp ý
-        </span>
-    </div>
 
-    <div class="card border-0 rounded-4 overflow-hidden shadow-lg" style="background: #181310; border: 1px solid #362e29 !important;">
+        <!-- Bảng hiển thị danh sách tin nhắn -->
         <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle mb-0">
-                <thead style="background-color: #212529;">
-                    <tr class="text-warning text-uppercase small" style="letter-spacing: 1px;">
-                        <th class="py-3 px-4">STT</th>
-                        <th class="py-3">Họ & Tên</th>
-                        <th class="py-3">Số Điện Thoại</th>
-                        <th class="py-3">Tiêu Đề & Nội Dung Tin Nhắn</th>
-                        <th class="py-3 px-4 text-end">Ngày Gửi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (typeof contacts !== 'undefined' && contacts.length > 0) { %>
-                        <% contacts.forEach((item, index) => { %>
-                            <tr class="border-bottom" style="border-color: #2b2420 !important;">
-                                <td class="px-4 fw-bold text-warning">#<%= index + 1 %></td>
-                                
-                                <!-- Hứng name của nhóm trưởng -->
-                                <td class="fw-bold text-white">
-                                    <%= item.name || item.fullname || 'Khách hàng' %>
-                                </td>
-                                
-                                <!-- Hứng phone của nhóm trưởng -->
-                                <td>
-                                    <div class="text-white small">
-                                        <i class="bi bi-telephone-fill me-1 text-warning"></i>
-                                        <%= item.phone || 'Chưa có SĐT' %>
-                                    </div>
-                                </td>
-                                
-                                <!-- Hứng subject & message của nhóm trưởng -->
-                                <td>
-                                    <% if (item.subject) { %>
-                                        <div class="text-warning small fw-bold mb-1">[<%= item.subject %>]</div>
-                                    <% } %>
-                                    <div class="text-white-50 small" style="max-width: 350px;">
-                                        <%= item.message || 'Không có nội dung' %>
-                                    </div>
-                                </td>
-                                
-                                <td class="px-4 text-end small text-white-50">
-                                    <%= item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : 'Mới đây' %>
-                                </td>
-                            </tr>
-                        <% }) %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-white-50">
-                                <i class="bi bi-chat-square-dots fs-1 d-block mb-2 text-secondary"></i>
-                                Chưa có tin nhắn liên hệ nào từ khách hàng.
-                            </td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
+          <table class="table table-dark table-hover align-middle mb-0" style="background-color: transparent;">
+            <thead>
+              <tr class="text-secondary text-uppercase fs-7" style="font-size: 0.85rem; border-bottom: 2px solid #2a2c35;">
+                <th class="py-3">STT</th>
+                <th class="py-3">Người gửi</th>
+                <th class="py-3">Số điện thoại</th>
+                <th class="py-3">Nội dung tin nhắn</th>
+                <th class="py-3">Trạng thái</th>
+                <th class="py-3 text-center">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (locals.contacts && contacts.length > 0) { %>
+                <% contacts.forEach((item, index) => { %>
+                  <tr style="border-bottom: 1px solid #222630;">
+                    <td class="fw-bold text-warning">#<%= index + 1 %></td>
+                    <td class="fw-semibold text-white"><%= item.name %></td>
+                    
+                    <td class="text-white-50 small">
+                      <i class="bi bi-telephone me-1"></i> <%= item.phone %>
+                    </td>
+                    
+                    <!-- Đã thêm thẻ div bọc lại và thuộc tính title để xem toàn bộ tin nhắn -->
+                    <td class="text-white" style="max-width: 250px;">
+                      <div class="text-truncate mb-0" title="<%= item.message %>" style="cursor: help;">
+                        <%= item.message %>
+                      </div>
+                    </td>
+                    
+                    <td>
+                      <% if (item.status === 'read') { %>
+                        <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-3 py-2">Đã phản hồi</span>
+                      <% } else { %>
+                        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 px-3 py-2">Chưa đọc</span>
+                      <% } %>
+                    </td>
+                    
+                    <td class="text-center">
+                      <div class="d-flex justify-content-center gap-2">
+                        
+                        <!-- Nút Đánh dấu đã đọc/phản hồi -->
+                        <form action="/admin/contacts/update/<%= item.id %>" method="POST" style="margin: 0;">
+                          <input type="hidden" name="status" value="read">
+                          <button type="submit" class="btn btn-sm btn-success text-white shadow-sm" title="Đánh dấu đã phản hồi">
+                            <i class="bi bi-check-lg"></i>
+                          </button>
+                        </form>
+
+                        <!-- Nút Xem chi tiết / Gọi form phản hồi trực tiếp (Đã thêm data-message) -->
+                        <button type="button" class="btn btn-sm btn-info text-white shadow-sm" title="Nhắn tin phản hồi trực tiếp" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#replyModal" 
+                                data-id="<%= item.id %>" 
+                                data-name="<%= item.name %>" 
+                                data-phone="<%= item.phone %>"
+                                data-message="<%= item.message %>">
+                          <i class="bi bi-reply-fill"></i>
+                        </button>
+
+                        <!-- Nút Xóa -->
+                        <form action="/admin/contacts/delete/<%= item.id %>" method="POST" style="margin: 0;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn tin nhắn này?');">
+                          <button type="submit" class="btn btn-sm btn-danger text-white shadow-sm" title="Xóa tin nhắn">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </form>
+
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="6" class="text-center text-white-50 py-5">
+                    <i class="bi bi-inbox fs-1 d-block mb-2 text-warning"></i>
+                    Không có tin nhắn nào mới.
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
+  </div>
 </main>
 
-<%- include('../partials/footer') %>
+<!-- ================= MODAL PHẢN HỒI TIN NHẮN TRỰC TIẾP ================= -->
+<div class="modal fade" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-white" style="background-color: #1a1d24; border: 1px solid #363a45;">
+      
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title font-serif text-warning" id="replyModalLabel">
+          <i class="bi bi-chat-dots me-2"></i>Phản hồi khách hàng
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+      </div>
+      
+      <!-- Form sẽ gửi data lên một Route mới để xử lý tin nhắn -->
+      <form action="/admin/contacts/reply" method="POST">
+        <div class="modal-body">
+          <!-- Trường ẩn để lưu thông tin khách hàng đang được chọn -->
+          <input type="hidden" name="contactId" id="modalContactId">
+          <input type="hidden" name="contactPhone" id="modalContactPhone">
+          
+          <div class="mb-3">
+            <p class="mb-1 text-white-50 small">Đang trả lời tới:</p>
+            <strong id="modalContactName" class="fs-5 text-white"></strong> 
+            <span id="modalContactPhoneDisplay" class="ms-2 text-warning"></span>
+          </div>
 
-<style>
-    .font-serif { font-family: 'Playfair Display', Georgia, serif; font-style: italic; }
-</style>
+          <!-- KHUNG HIỂN THỊ TIN NHẮN CỦA KHÁCH -->
+          <div class="mb-4 p-3 rounded-3 shadow-sm" style="background-color: #232730; border-left: 4px solid #0dcaf0;">
+            <div class="text-info small fw-bold text-uppercase mb-2">
+              <i class="bi bi-chat-left-text me-1"></i> Nội dung khách gửi:
+            </div>
+            <div id="modalContactMessage" class="text-white" style="white-space: pre-wrap; word-wrap: break-word; font-size: 0.95rem; line-height: 1.5;">
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label text-white-50 small text-uppercase fw-bold">Nội dung tin nhắn *</label>
+            <textarea name="replyMessage" class="form-control text-white border-secondary" 
+                      style="background-color: #0f1115;" rows="5" required 
+                      placeholder="Nhập nội dung bạn muốn gửi tới khách hàng..."></textarea>
+          </div>
+        </div>
+        
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+          <button type="submit" class="btn btn-info text-white fw-bold">
+            <i class="bi bi-send-fill me-2"></i> Gửi Tin Nhắn
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ĐOẠN SCRIPT ĐỂ ĐỔ DỮ LIỆU TỪ BẢNG VÀO TRONG MODAL KHI BẤM NÚT TRẢ LỜI -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var replyModal = document.getElementById('replyModal');
+    if (replyModal) {
+      replyModal.addEventListener('show.bs.modal', function (event) {
+        // Nút (Button) đã kích hoạt modal
+        var button = event.relatedTarget;
+        
+        // Lấy thông tin từ các thuộc tính data-*
+        var id = button.getAttribute('data-id');
+        var name = button.getAttribute('data-name');
+        var phone = button.getAttribute('data-phone');
+        var message = button.getAttribute('data-message'); // Lấy thêm nội dung tin nhắn
+        
+        // Cập nhật dữ liệu vào các thẻ HTML bên trong Modal
+        document.getElementById('modalContactId').value = id;
+        document.getElementById('modalContactPhone').value = phone;
+        document.getElementById('modalContactName').textContent = name;
+        document.getElementById('modalContactPhoneDisplay').textContent = '(' + phone + ')';
+        
+        // Đổ nội dung tin nhắn vào khung hiển thị mới tạo
+        document.getElementById('modalContactMessage').textContent = message;
+      });
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %>

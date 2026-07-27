@@ -1,26 +1,24 @@
-const db = require('../config/db');
 const bcrypt = require('bcrypt'); // Thư viện mã hóa mật khẩu
+const User = require('../models/User');   
+const Admin = require('../models/Admin'); 
 
 // 1. HIỂN THỊ TRANG ĐĂNG NHẬP
 exports.getLogin = (req, res) => {
     res.render('auth/login', { hideSearch: true, error: null }); 
 };
 
-// 2. XỬ LÝ ĐĂNG NHẬP (Sử dụng Số điện thoại)
+// 2. XỬ LÝ ĐĂNG NHẬP 
 exports.postLogin = async (req, res) => {
     try {
-        // Nhận dữ liệu phone (hoặc username nếu form cũ của bạn để name="username")
         const phone = req.body.phone || req.body.username; 
         const password = req.body.password;
 
-        // B1: Tìm user trong Database dựa vào số điện thoại
-        const [users] = await db.query("SELECT * FROM users WHERE phone = ?", [phone]);
+        // B1: Gọi Model tìm user trong Database
+        const user = await User.findByPhone(phone);
 
-        if (users.length === 0) {
+        if (!user) {
             return res.render('auth/login', { hideSearch: true, error: 'Số điện thoại chưa được đăng ký!' });
         }
-
-        const user = users[0];
 
         // B2: So sánh mật khẩu
         const match = await bcrypt.compare(password, user.password);
@@ -53,27 +51,22 @@ exports.postRegister = async (req, res) => {
     try {
         const { fullname, phone, email, password, confirm_password } = req.body;
 
-        // Kiểm tra mật khẩu xác nhận
         if (password !== confirm_password) {
             return res.render('auth/register', { hideSearch: true, error: 'Mật khẩu xác nhận không khớp!' });
         }
 
-        // Kiểm tra xem số điện thoại đã tồn tại chưa
-        const [existingUser] = await db.query("SELECT * FROM users WHERE phone = ?", [phone]);
+        // Gọi Model kiểm tra số điện thoại tồn tại
+        const existingUser = await User.findByPhone(phone);
 
-        if (existingUser.length > 0) {
+        if (existingUser) {
             return res.render('auth/register', { hideSearch: true, error: 'Số điện thoại này đã được đăng ký!' });
         }
 
-        // Mã hóa mật khẩu
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Lưu vào Database (Bỏ cột username)
-        await db.query(
-            "INSERT INTO users (fullname, phone, email, password) VALUES (?, ?, ?, ?)",
-            [fullname, phone, email || null, hashedPassword]
-        );
+        // Gọi Model lưu user mới
+        await User.create({ fullname, phone, email, hashedPassword });
 
         res.send(`
             <script>
@@ -95,7 +88,6 @@ exports.logout = (req, res) => {
     });
 };
 
-
 // ================= PHẦN DÀNH CHO ADMIN  =================
 
 // 6. Hiển thị trang đăng nhập riêng cho Admin
@@ -111,16 +103,13 @@ exports.postAdminLogin = async (req, res) => {
     try {
         const { phone, password } = req.body;
 
-        // Truy vấn từ bảng admins
-        const [users] = await db.query('SELECT * FROM admins WHERE phone = ?', [phone]);
+        // Gọi Model truy vấn từ bảng admins
+        const user = await Admin.findByPhone(phone);
 
-        if (users.length === 0) {
+        if (!user) {
             return res.render('admin/login', { error: 'Số điện thoại hoặc mật khẩu không chính xác!' });
         }
 
-        const user = users[0];
-
-        // So sánh mật khẩu thô người dùng gõ với chuỗi hash trong Database
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.render('admin/login', { error: 'Số điện thoại hoặc mật khẩu không chính xác!' });
@@ -130,7 +119,6 @@ exports.postAdminLogin = async (req, res) => {
             return res.render('admin/login', { error: 'Bạn không có quyền truy cập trang quản trị!' });
         }
 
-        // Lưu session
         req.session.admin = {
             id: user.id,
             fullname: user.fullname,

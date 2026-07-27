@@ -1,22 +1,15 @@
-const db = require('../config/db'); 
+const Product = require('../models/Product');   
+const Category = require('../models/Category'); 
 
+// Hiển thị danh sách món ăn trang Admin
 exports.getAdminDishes = async (req, res) => {
     try {
-        // Lấy danh sách sản phẩm, nối với bảng categories để lấy tên danh mục
-        const query = `
-            SELECT p.id, p.name, p.price, p.image_url, p.status, c.name AS category_name
-            FROM products p
-            LEFT JOIN categories c ON p.category_id = c.id
-            ORDER BY p.id DESC
-        `;
-        
-        const [dishes] = await db.execute(query);
+        // Gọi Model lấy danh sách món ăn kèm tên danh mục
+        const dishes = await Product.getAllWithCategory();
 
-        // Render ra giao diện 
         res.render('admin/dishes', { 
             dishes: dishes 
         });
-
     } catch (error) {
         console.error("Lỗi khi tải trang quản lý món ăn:", error);
         res.status(500).send("Đã xảy ra lỗi trên server!");
@@ -26,8 +19,8 @@ exports.getAdminDishes = async (req, res) => {
 // 1. Hàm hiển thị form thêm món mới
 exports.getAddDish = async (req, res) => {
     try {
-        // Lấy danh sách danh mục (categories) từ Database để đưa vào thẻ Dropdown (Chọn danh mục)
-        const [categories] = await db.execute('SELECT id, name FROM categories ORDER BY id ASC');
+        // Gọi Model lấy danh sách danh mục đổ vào Dropdown
+        const categories = await Category.getAll();
         
         res.render('admin/addDish', { 
             categories: categories 
@@ -38,7 +31,7 @@ exports.getAddDish = async (req, res) => {
     }
 };
 
-// 2. Hàm xử lý lưu dữ liệu vào Database
+// 2. Hàm xử lý lưu dữ liệu món ăn mới
 exports.postAddDish = async (req, res) => {
     try {
         const { name, price, category_id, status, is_bestseller } = req.body;
@@ -48,16 +41,18 @@ exports.postAddDish = async (req, res) => {
 
         let image_url = 'images/default-food.jpg';
         if (req.file) {
-            // req.file.filename chính là cái tên ảnh độc nhất mà Multer vừa tạo ra
             image_url = 'images/' + req.file.filename; 
         }
 
-        const query = `
-            INSERT INTO products (name, price, category_id, status, is_bestseller, image_url)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
-        
-        await db.execute(query, [name, price, category_id, product_status, bestseller, image_url]);
+        // Gọi Model để lưu món ăn mới
+        await Product.create({
+            name,
+            price,
+            category_id,
+            status: product_status,
+            is_bestseller: bestseller,
+            image_url
+        });
 
         res.redirect('/admin/dishes');
     } catch (error) {
@@ -66,15 +61,14 @@ exports.postAddDish = async (req, res) => {
     }
 };
 
-// Xóa món ăn
+// 3. Xóa món ăn
 exports.deleteDish = async (req, res) => {
     try {
         const dishId = req.params.id;
         
-        // Chạy lệnh xóa món ăn có id tương ứng
-        await db.execute('DELETE FROM products WHERE id = ?', [dishId]);
+        // Gọi Model xóa món ăn theo ID
+        await Product.delete(dishId);
         
-        // Xóa xong thì load lại trang danh sách
         res.redirect('/admin/dishes');
     } catch (error) {
         console.error("Lỗi khi xóa món ăn:", error);
@@ -82,22 +76,19 @@ exports.deleteDish = async (req, res) => {
     }
 };
 
-// Hiển thị form Sửa món ăn (Kéo dữ liệu cũ ra để điền vào form)
+// 4. Hiển thị form Sửa món ăn
 exports.getEditDish = async (req, res) => {
     try {
         const dishId = req.params.id;
         
-        // 1. Lấy thông tin của món ăn đang cần sửa
-        const [dishes] = await db.execute('SELECT * FROM products WHERE id = ?', [dishId]);
-        if (dishes.length === 0) {
+        // Gọi các Model lấy thông tin món ăn và danh sách danh mục
+        const dish = await Product.findById(dishId);
+        if (!dish) {
             return res.status(404).send("Không tìm thấy món ăn này!");
         }
-        const dish = dishes[0]; // Món ăn hiện tại
 
-        // 2. Lấy danh sách danh mục để đổ vào Dropdown
-        const [categories] = await db.execute('SELECT id, name FROM categories ORDER BY id ASC');
+        const categories = await Category.getAll();
         
-        // Trả ra giao diện editDish
         res.render('admin/editDish', { 
             dish: dish, 
             categories: categories 
@@ -108,7 +99,7 @@ exports.getEditDish = async (req, res) => {
     }
 };
 
-// Xử lý Lưu thông tin vừa sửa
+// 5. Xử lý lưu thông tin món ăn vừa sửa
 exports.postEditDish = async (req, res) => {
     try {
         const dishId = req.params.id;
@@ -117,24 +108,20 @@ exports.postEditDish = async (req, res) => {
         const product_status = status ? parseInt(status) : 1; 
         const bestseller = is_bestseller === 'on' ? 1 : 0; 
 
-        // Nếu admin có upload ảnh MỚI thì cập nhật cả ảnh, nếu không thì giữ nguyên ảnh cũ
+        const updateData = {
+            name,
+            price,
+            category_id,
+            status: product_status,
+            is_bestseller: bestseller
+        };
+
         if (req.file) {
-            const image_url = 'images/' + req.file.filename;
-            const query = `
-                UPDATE products 
-                SET name = ?, price = ?, category_id = ?, status = ?, is_bestseller = ?, image_url = ? 
-                WHERE id = ?
-            `;
-            await db.execute(query, [name, price, category_id, product_status, bestseller, image_url, dishId]);
-        } else {
-            // Câu lệnh UPDATE không có image_url
-            const query = `
-                UPDATE products 
-                SET name = ?, price = ?, category_id = ?, status = ?, is_bestseller = ? 
-                WHERE id = ?
-            `;
-            await db.execute(query, [name, price, category_id, product_status, bestseller, dishId]);
+            updateData.image_url = 'images/' + req.file.filename;
         }
+
+        // Gọi Model cập nhật dữ liệu
+        await Product.update(dishId, updateData);
 
         res.redirect('/admin/dishes');
     } catch (error) {
