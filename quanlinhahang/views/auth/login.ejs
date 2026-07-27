@@ -1,44 +1,46 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
-<main class="container my-5 py-4">
-  <div class="row justify-content-center">
+<main class="container my-5 py-4" style="min-height: 80vh;">
+  <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
     <div class="col-md-6 col-lg-5">
+      
       <div class="p-4 p-md-5 rounded-4 shadow-lg position-relative" style="background-color: #1a1614; border: 1px solid #362e29;">
         
         <!-- Header Logo & Tiêu đề -->
         <div class="text-center mb-4">
           <img src="/images/logo.png" alt="Grill House Logo" class="mb-3 shadow" style="height: 65px; width: 65px; object-fit: cover; border-radius: 50%; border: 2px solid #ff4a5a;" onerror="this.src='/images/default-food.jpg'">
-          <h3 class="fw-bold text-white font-serif mb-1">Đăng Nhập</h3>
-          <p class="text-white-50 small mb-0">Chào mừng bạn quay lại với Grill House</p>
+          <span class="text-warning text-uppercase small d-block fw-bold tracking-wider" style="letter-spacing: 2px;">Grill House System</span>
+          <h3 class="fw-bold text-white font-serif mb-1">Đăng Nhập Hệ Thống</h3>
+          <p class="text-white-50 small mb-0">Dành cho khách hàng và quản trị viên</p>
         </div>
 
-        <!-- Khối hiển thị thông báo lỗi / thành công từ Server (nếu có) -->
-        <% if (locals.error) { %>
+        <!-- Khối hiển thị thông báo lỗi / thành công -->
+        <% if (locals.error && error) { %>
           <div class="alert alert-danger bg-danger text-white border-0 small rounded-3 mb-4 d-flex align-items-center" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
             <div><%= error %></div>
           </div>
         <% } %>
 
-        <% if (locals.success) { %>
+        <% if (locals.success && success) { %>
           <div class="alert alert-success bg-success text-white border-0 small rounded-3 mb-4 d-flex align-items-center" role="alert">
             <i class="bi bi-check-circle-fill me-2 fs-5"></i>
             <div><%= success %></div>
           </div>
         <% } %>
 
-        <!-- Form Đăng Nhập -->
+        <!-- Form Đăng Nhập Chung -->
         <form action="/auth/login" method="POST" id="login-form">
           
-          <!-- Ô nhập Tài khoản / Email / SĐT -->
+          <!-- Ô nhập Số điện thoại -->
           <div class="mb-3">
-            <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Số điện thoại / Email</label>
+            <label class="form-label text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Số điện thoại</label>
             <div class="input-group">
               <span class="input-group-text custom-input-bg border-end-0 text-white-50">
-                <i class="bi bi-person-fill"></i>
+                <i class="bi bi-telephone-fill"></i>
               </span>
-              <input type="text" name="username" class="form-control custom-input border-start-0 py-2 px-3" required placeholder="Nhập tài khoản của bạn" autocomplete="username">
+              <input type="tel" name="username" class="form-control custom-input border-start-0 py-2 px-3" required placeholder="Nhập số điện thoại của bạn" autocomplete="tel">
             </div>
           </div>
           
@@ -72,16 +74,17 @@
         </div>
 
       </div>
+
     </div>
   </div>
 </main>
 
 <%- include('../partials/footer') %>
 
-<!-- Script xử lý sự kiện giao diện -->
+<!-- Script xử lý giao diện -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Logic ẩn/hiện mật khẩu
+    // 1. Ẩn/hiện mật khẩu
     const togglePasswordBtn = document.getElementById('toggle-password');
     const passwordInput = document.getElementById('password-input');
     const toggleIcon = document.getElementById('toggle-icon');
@@ -90,13 +93,12 @@
       togglePasswordBtn.addEventListener('click', () => {
         const isPassword = passwordInput.getAttribute('type') === 'password';
         passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
-        
         toggleIcon.classList.toggle('bi-eye-fill', isPassword);
         toggleIcon.classList.toggle('bi-eye-slash-fill', !isPassword);
       });
     }
 
-    // 2. Logic hiển thị vòng xoay chờ khi gửi Form
+    // 2. Hiệu ứng loading khi submit
     const loginForm = document.getElementById('login-form');
     const submitBtn = document.getElementById('submit-btn');
     const btnText = document.getElementById('btn-text');
@@ -110,42 +112,15 @@
   });
 </script>
 
-<!-- Tùy chỉnh CSS giao diện Tối (Dark Theme) -->
 <style>
   body { font-family: 'Plus Jakarta Sans', sans-serif; }
   .font-serif { font-family: 'Playfair Display', Georgia, serif; }
-  
-  /* Đổi màu ô nhập dữ liệu */
-  .custom-input-bg {
-    background-color: #241f1c !important;
-    border-color: #362e29 !important;
-  }
-  .custom-input {
-    background-color: #241f1c !important;
-    color: #ffffff !important;
-    border-color: #362e29 !important;
-  }
-  .custom-input::placeholder {
-    color: #8c8580 !important;
-  }
-  
-  /* Hiệu ứng Focus viền vàng cho ô Input */
-  .custom-input:focus {
-    background-color: #241f1c !important;
-    color: #ffffff !important;
-    box-shadow: none !important;
-    border-color: #ffc107 !important;
-  }
-  .input-group:focus-within .custom-input-bg,
-  .input-group:focus-within .custom-input {
-    border-color: #ffc107 !important;
-  }
-  
-  /* Hiệu ứng Hover nút và Link */
+  .custom-input-bg { background-color: #241f1c !important; border-color: #362e29 !important; }
+  .custom-input { background-color: #241f1c !important; color: #ffffff !important; border-color: #362e29 !important; }
+  .custom-input::placeholder { color: #8c8580 !important; }
+  .custom-input:focus { background-color: #241f1c !important; color: #ffffff !important; box-shadow: none !important; border-color: #ffc107 !important; }
+  .input-group:focus-within .custom-input-bg, .input-group:focus-within .custom-input { border-color: #ffc107 !important; }
   .hover-scale { transition: all 0.3s ease; }
-  .hover-scale:hover { 
-    transform: translateY(-2px); 
-    box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3) !important; 
-  }
+  .hover-scale:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3) !important; }
   .hover-underline:hover { text-decoration: underline !important; }
 </style>
