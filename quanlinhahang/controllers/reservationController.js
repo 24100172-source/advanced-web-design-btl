@@ -9,7 +9,8 @@ exports.getAdminReservations = async (req, res) => {
         
         const formattedReservations = reservations.map(item => ({
             id: item.id,
-            name: item.fullname,      
+            name: item.fullname,  
+            phone: item.phone,
             date: item.booking_date,  
             time: item.booking_time,  
             guests: item.guests_count,
