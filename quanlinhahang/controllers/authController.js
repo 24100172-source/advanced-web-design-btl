@@ -131,7 +131,7 @@ exports.logout = (req, res) => {
     });
 };
 
-// ================= ROUTE DỰ PHÒNG CHO ADMIN (GIỮ LẠI ĐỂ TƯƠNG THÍCH) =================
+// ROUTE DỰ PHÒNG CHO ADMIN
 exports.getAdminLogin = exports.getLogin;
 exports.postAdminLogin = exports.postLogin;
 exports.adminLogout = exports.logout;
