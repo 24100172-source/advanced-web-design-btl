@@ -15,7 +15,7 @@ router.post('/admin/login', authController.postAdminLogin);
 // Route Đăng xuất Admin
 router.get('/admin/logout', authController.adminLogout);
 
-// --- CÁC ROUTE QUẢN LÝ (BẮT BUỘC PHẢI ĐĂNG NHẬP ADMIN MỚI VÀO ĐƯỢC) ---
+// CÁC ROUTE QUẢN LÝ (BẮT BUỘC PHẢI ĐĂNG NHẬP ADMIN)
 
 // Quản lý Đặt bàn
 router.get('/admin/reservations', adminAuth, reservationController.getAdminReservations);
